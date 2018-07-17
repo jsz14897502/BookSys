@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <title>register</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
+    <style>
+        body{
+            background: #eee
+            url(http://subtlepatterns.com/patterns/sativa.png);
+        }
+        html,body{
+            position: relative;
+            height: 100%;
+        }
+        a {
+            color: #aaaaaa;
+            transition: all ease-in-out 200ms;
+        }
+        a:hover {
+            color: #333333;
+            text-decoration: none;
+        }
+        .login-form-1 {
+            max-width: 300px;
+            border-radius: 5px;
+
+        }
+        .login-form-1 .form-control {
+            border: 0;
+            box-shadow: 0 0 0;
+            border-radius: 0;
+            background: transparent;
+            color: #555555;
+            padding: 7px 0;
+            font-weight: bold;
+            height:auto;
+        }
+        .login-form-1 .form-control::-webkit-input-placeholder {
+            color: #999999;
+        }
+        .login-form-1 .form-control:-moz-placeholder,
+        .login-form-1 .form-control::-moz-placeholder,
+        .login-form-1 .form-control:-ms-input-placeholder {
+            color: #999999;
+        }
+        .login-form-1 .form-group {
+            margin-bottom: 0;
+            border-bottom: 2px solid #efefef;
+            padding-right: 20px;
+            position: relative;
+        }
+        .login-group {
+            background: #ffffff;
+            color: #999999;
+            padding: 10px 20px;
+        }
+        .login-group-checkbox {
+            padding: 5px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="text-center" style="padding: 50px 0" >
+        <div class="badge badge-primary" style="font-size: larger">图书管理系统</div>
+        <br><br>
+        <div class="offset-md-4 col-md-4 ">
+            <ul class="nav nav-tabs nav-justified">
+                <li class="nav-item">
+                    <a class="nav-link" href="login.html">登录</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="">注册</a>
+                </li>
+            </ul>
+            <form action=""  class="text-left">
+                <div style="position: relative">
+                    <div class="login-group">
+                        <div class="form-group">
+                            <label for="student_id">学号</label>
+                            <input type="text" class="form-control" id="student_id">
+                            <lable id="si" class="text-warning small"></lable>
+                        </div>
+                        <div class="form-group">
+                            <label for="name">用户名</label>
+                            <input type="text" class="form-control" id="name">
+                            <lable id="na" class="text-warning small"></lable>
+                        </div>
+                        <div class="form-group">
+                            <label for="password1">密码</label>
+                            <input type="password" class="form-control" id="password1">
+                            <lable id="p1" class="text-warning small"></lable>
+                        </div>
+                        <div class="form-group">
+                            <label for="password2">确认密码</label>
+                            <input type="password" class="form-control" id="password2">
+                            <lable id="p2" class="text-warning small"></lable>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">邮箱</label>
+                            <input type="text" class="form-control" id="email">
+                            <lable id="em" class="text-warning small"></lable>
+                        </div>
+                        <div class="form-group">
+                            <label for="tel">手机</label>
+                            <input type="text" class="form-control" id="tel">
+                            <lable id="te" class="text-warning small"></lable>
+                        </div>
+                        <button class="btn btn-lg btn-primary btn-block" id="register_btn" type="submit">注册</button>
+                        <br>
+                        <p class="text-danger">暂不支持直接找回密码，请务必记牢！如需找回请联系管理人员</p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="scripts/jquery.js"></script>
+<script>
+
+    $("#student_id").blur(function () {
+        var id= $("#student_id").val();
+        var rei = /^20\d{10}$/
+        if (rei.test(id)) {
+            $("#si").text('');
+            $('#register_btn').attr('disabled', false);
+        } else {
+            $("#si").text('错误，请填写正确的学号!');
+            $("#register_btn").attr("disabled",true)
+        }
+    })
+
+    $("#name").blur(function () {
+        var ren= /^[a-z]*$/g;
+        var name= $("#name").val();
+        if (name==''||name==null){
+            $("#na").text('用户名不可为空');
+            $("#register_btn").attr("disabled",true)
+        }
+        else if(ren.test(name)){
+            $("#na").text('');
+            $('#register_btn').attr('disabled', false);
+        }
+        else {
+            $("#na").text('用户名必须由小写字母组成');
+            $("#register_btn").attr("disabled",true)
+        }
+    })
+
+    $("#password1").blur(function () {
+        var pass1= $("#password1").val();
+        var pattern = /^\w{6,15}$/;
+        if(pattern.test(pass1)){
+            $("#p1").text('');
+            $('#register_btn').attr('disabled', false);
+        }
+        else if(pass1 =="" || pass1==null){
+            $("#p1").text('密码不能为空');
+            $("#register_btn").attr("disabled",true)
+        }
+        else{
+            $("#p1").text('密码需在6-15位之间');
+            $("#register_btn").attr("disabled",true)
+        }
+    })
+
+    $("#password2").blur(function () {
+        var pass1= $("#password1").val();
+        var pass2= $("#password2").val();
+        if (pass1==pass2){
+            $("#p2").text('')
+            $('#register_btn').attr('disabled', false);
+        }
+        else {
+            $("#p2").text('两次输入密码不一致！')
+            $("#register_btn").attr("disabled",true)
+        }
+    })
+
+    $("#email").blur(function () {
+        var email= $("#email").val();
+        var  ree = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
+        if (ree.test(email)) {
+            $("#em").text('');
+            $('#register_btn').attr('disabled', false);
+        } else {
+            $("#em").text('格式错误，请填写正确的邮箱!');
+            $("#register_btn").attr("disabled",true)
+        }
+    })
+
+    $("#tel").blur(function () {
+        var tel= $("#tel").val();
+        var  ret = /^[1][3,4,5,7,8][0-9]{9}$/;
+        if (ret.test(tel)) {
+            $("#te").text('');
+            $('#register_btn').attr('disabled', false);
+        } else {
+            $("#te").text('格式错误，请填写正确的手机号码以便联系!');
+            $("#register_btn").attr("disabled",true)
+        }
+    })
+
+    //ajax post相关数据
+    $("#register_btn").click(function ( ) {
+
+        //此部分代码为解决django自带的csrf防护
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            crossDomain: false, // obviates need for sameOrigin test
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        var id= $("#student_id").val();
+        var name= $("#name").val();
+        var pass1= $("#password1").val();
+        //var pass2= $("#password2").val();
+        var email= $("#email").val();
+        var tel =$("#tel").val();
+        if(id == ''){
+            alert("请输入账号");
+            return false;
+        }
+        if(name == ''){
+            alert("请输入用户名");
+            return false;
+        }
+        if(pass1 == ''){
+            alert("请输入密码");
+            return false;
+        }
+        if(email == ''){
+            alert("请输入邮箱");
+            return false;
+        }
+        if(tel == ''){
+            alert("请输入电话");
+            return false;
+        }
+
+        //ajax部分，待添加
+        // $.ajax({
+        //     type : "post",
+        //     url : "",
+        //     data : {
+        //         id : id ,
+        //         name : name,
+        //         password :pass1 ,
+        //         tel : tel,
+        //         email : email
+        //     },
+        //     success : function (data) {
+        //         if (data){
+        //             if (data.message==''){
+        //                 //由后端提供返回数据进行操作，路由交由后端进行，前端不负责成功后的页面跳转
+        //             }
+        //         }
+        //     }
+        // })
+    })
+</script>
+</body>
+</html>
