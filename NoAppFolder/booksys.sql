@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50721
 File Encoding         : 65001
 
-Date: 2018-07-18 15:32:55
+Date: 2018-07-18 19:46:45
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -223,7 +223,7 @@ CREATE TABLE `django_migrations` (
   `name` varchar(255) NOT NULL,
   `applied` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of django_migrations
@@ -243,6 +243,8 @@ INSERT INTO `django_migrations` VALUES ('12', 'auth', '0007_alter_validators_add
 INSERT INTO `django_migrations` VALUES ('13', 'auth', '0008_alter_user_username_max_length', '2018-07-18 07:28:26.712439');
 INSERT INTO `django_migrations` VALUES ('14', 'auth', '0009_alter_user_last_name_max_length', '2018-07-18 07:28:26.766295');
 INSERT INTO `django_migrations` VALUES ('15', 'sessions', '0001_initial', '2018-07-18 07:28:26.813170');
+INSERT INTO `django_migrations` VALUES ('16', 'LibrarySys', '0002_auto_20180718_1643', '2018-07-18 08:43:48.715836');
+INSERT INTO `django_migrations` VALUES ('17', 'LibrarySys', '0003_auto_20180718_1908', '2018-07-18 11:08:50.502182');
 
 -- ----------------------------
 -- Table structure for django_session
@@ -271,18 +273,23 @@ CREATE TABLE `librarysys_book_list` (
   `author` varchar(100) NOT NULL,
   `translator` varchar(40) DEFAULT NULL,
   `press` varchar(20) NOT NULL,
-  `price` int(11) NOT NULL,
+  `price` double NOT NULL,
   `borrowed_times` int(11) NOT NULL,
   `state_code` int(11) NOT NULL,
   `owner_id` int(11) NOT NULL,
+  `book_image` varchar(100) DEFAULT NULL,
+  `profiles` varchar(300) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `LibrarySys_book_list_owner_id_ab846789_fk_LibrarySys_user_id` (`owner_id`),
   CONSTRAINT `LibrarySys_book_list_owner_id_ab846789_fk_LibrarySys_user_id` FOREIGN KEY (`owner_id`) REFERENCES `librarysys_user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of librarysys_book_list
 -- ----------------------------
+INSERT INTO `librarysys_book_list` VALUES ('1', '9787302333142', '汇编语言 第三版', '王爽', null, '清华大学出版社', '39.8', '1', '0', '4', null, null);
+INSERT INTO `librarysys_book_list` VALUES ('2', '9787111400851', '数据库系统概念 第六版', 'Abraham Silberschatz; Henry F. Korth; S. Sudarshan', '杨冬青 李红燕 唐世渭', '机械工业出版社', '59', '1', '0', '3', null, null);
+INSERT INTO `librarysys_book_list` VALUES ('3', '9787040108231', '托马斯微积分 第十版', 'Finney; Weir; Giordano', '叶其孝 王耀东 唐兢', '高等教育出版社', '88', '0', '0', '1', null, null);
 
 -- ----------------------------
 -- Table structure for librarysys_borrow
@@ -298,11 +305,13 @@ CREATE TABLE `librarysys_borrow` (
   KEY `LibrarySys_borrow_previous_id_8a6fa548_fk_LibrarySys_user_id` (`previous_id`),
   CONSTRAINT `LibrarySys_borrow_book_name_id_22fd48ed_fk_LibrarySy` FOREIGN KEY (`book_name_id`) REFERENCES `librarysys_book_list` (`id`),
   CONSTRAINT `LibrarySys_borrow_previous_id_8a6fa548_fk_LibrarySys_user_id` FOREIGN KEY (`previous_id`) REFERENCES `librarysys_user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of librarysys_borrow
 -- ----------------------------
+INSERT INTO `librarysys_borrow` VALUES ('1', '2018-10-01 19:26:26.000000', '1', '1');
+INSERT INTO `librarysys_borrow` VALUES ('2', '2018-10-01 19:28:38.000000', '2', '3');
 
 -- ----------------------------
 -- Table structure for librarysys_login_record
@@ -331,17 +340,21 @@ CREATE TABLE `librarysys_request` (
   `confirm_code` smallint(6) NOT NULL,
   `expiry_time` datetime(6) NOT NULL,
   `book_name_id` int(11) NOT NULL,
-  `owner_id` int(11) NOT NULL,
+  `requster_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `LibrarySys_request_book_name_id_97fec638_fk_LibrarySy` (`book_name_id`),
-  KEY `LibrarySys_request_owner_id_705a3369_fk_LibrarySys_user_id` (`owner_id`),
+  KEY `LibrarySys_request_requster_id_dc3c0b38_fk_LibrarySys_user_id` (`requster_id`),
   CONSTRAINT `LibrarySys_request_book_name_id_97fec638_fk_LibrarySy` FOREIGN KEY (`book_name_id`) REFERENCES `librarysys_book_list` (`id`),
-  CONSTRAINT `LibrarySys_request_owner_id_705a3369_fk_LibrarySys_user_id` FOREIGN KEY (`owner_id`) REFERENCES `librarysys_user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  CONSTRAINT `LibrarySys_request_requster_id_dc3c0b38_fk_LibrarySys_user_id` FOREIGN KEY (`requster_id`) REFERENCES `librarysys_user` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of librarysys_request
 -- ----------------------------
+INSERT INTO `librarysys_request` VALUES ('1', '2018-07-18 19:23:15.000000', '0', '2018-10-03 19:23:42.000000', '1', '1');
+INSERT INTO `librarysys_request` VALUES ('2', '2018-07-18 19:24:43.000000', '0', '2018-10-03 19:24:50.000000', '2', '1');
+INSERT INTO `librarysys_request` VALUES ('3', '2018-07-18 19:25:22.000000', '0', '2018-10-03 19:25:27.000000', '2', '2');
+INSERT INTO `librarysys_request` VALUES ('4', '2018-07-18 19:25:45.000000', '0', '2018-10-10 19:25:50.000000', '1', '3');
 
 -- ----------------------------
 -- Table structure for librarysys_user
@@ -359,11 +372,15 @@ CREATE TABLE `librarysys_user` (
   `last_time` datetime(6) DEFAULT NULL,
   `cancellation` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of librarysys_user
 -- ----------------------------
+INSERT INTO `librarysys_user` VALUES ('1', 'library', 'library', 'library', 'library', 'library', '0', '2018-07-17 15:12:52.000000', '2018-07-17 15:12:52.000000', '0');
+INSERT INTO `librarysys_user` VALUES ('2', '001', '001', 'python', 'biggrids@outlook.com', 'none', '0', '2018-07-18 18:57:06.000000', '2018-07-18 18:57:09.000000', '0');
+INSERT INTO `librarysys_user` VALUES ('3', '002', '002', 'python', '*', 'none', '0', '2018-07-18 19:20:51.000000', '2018-07-18 19:20:54.000000', '0');
+INSERT INTO `librarysys_user` VALUES ('4', '003', '003', 'python', '*', 'none', '0', '2018-07-18 19:21:25.000000', '2018-07-18 19:21:27.000000', '0');
 DROP TRIGGER IF EXISTS `last_time_update`;
 DELIMITER ;;
 CREATE TRIGGER `last_time_update` AFTER INSERT ON `librarysys_login_record` FOR EACH ROW begin
