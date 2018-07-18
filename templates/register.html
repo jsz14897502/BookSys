@@ -1,10 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <title>register</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/vendor/bootstrap.min.css' %}">
     <style>
         body{
             background: #eee
@@ -69,10 +70,10 @@
         <div class="offset-md-4 col-md-4 ">
             <ul class="nav nav-tabs nav-justified">
                 <li class="nav-item">
-                    <a class="nav-link" href="login.html">登录</a>
+                    <a class="nav-link" href="{% url 'login' %}">登录</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="">注册</a>
+                    <a class="nav-link active" href="{% url 'register' %}">注册</a>
                 </li>
             </ul>
             <form action=""  class="text-left">
@@ -118,7 +119,7 @@
     </div>
 </div>
 
-<script src="scripts/jquery.js"></script>
+<script src="{% static 'scripts/jquery.js' %}"></script>
 <script>
 
     $("#student_id").blur(function () {

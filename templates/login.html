@@ -1,10 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <title>login</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/vendor/bootstrap.min.css' %}">
     <style>
         body{
             background: #eee
@@ -69,10 +70,10 @@
         <div class="offset-md-4 col-md-4 ">
             <ul class="nav nav-tabs nav-justified">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#">登录</a>
+                    <a class="nav-link active" href="{% url 'login' %}">登录</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="register.html">注册</a>
+                    <a class="nav-link" href="{% url 'register' %}">注册</a>
                 </li>
             </ul>
             <form action=""  class="text-left">
@@ -91,7 +92,7 @@
                             <label for="lg_remember">记住密码</label>
                         </div>
                         <button class="btn btn-lg btn-primary btn-block" id="login_btn" type="submit" onclick="login();">登录</button>
-                        <p>新用户？ <a href="register.html">创建账号</a></p>
+                        <p>新用户？ <a href="{% url 'register' %}">创建账号</a></p>
                     </div>
                 </div>
             </form>
@@ -100,7 +101,7 @@
 </div>
 
 
-<script src="scripts/jquery.js"></script>
+<script src="{% static 'scripts/jquery.js' %}"></script>
 <script type="text/javascript">
     $(function(){ //获取cookie
         var loginCode = $.cookie("login_code"); //获取cookie中的用户名
