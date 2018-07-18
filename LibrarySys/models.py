@@ -12,6 +12,8 @@ class book_list(models.Model):
     owner = models.ForeignKey("user", on_delete=models.DO_NOTHING)
     borrowed_times = models.IntegerField(default=0, null=False)
     state_code = models.IntegerField(default=0, null=False)
+    profiles = models.CharField(max_length=300, null=True)
+    book_image = models.ImageField(upload_to="%Y/%m/%d/", null=True)
 
 
 class borrow(models.Model):
@@ -31,7 +33,7 @@ class request(models.Model):
     id = models.AutoField(primary_key=True)
     book_name = models.ForeignKey("book_list", on_delete=models.DO_NOTHING)
     cretime = models.DateTimeField(null=False)
-    owner = models.ForeignKey("user", on_delete=models.DO_NOTHING)
+    requster = models.ForeignKey("user", on_delete=models.DO_NOTHING)
     confirm_code = models.SmallIntegerField(default=0, null=False)
     expiry_time = models.DateTimeField(null=False)
 
