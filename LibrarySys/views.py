@@ -9,4 +9,4 @@ def signup(request):
     return render(request, 'register.html')
 
 def index(request):
-    pass
+    return render(request, 'index.html')
