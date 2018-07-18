@@ -8,7 +8,7 @@ class book_list(models.Model):
     author = models.CharField(max_length=100, null=False)
     translator = models.CharField(max_length=40, null=True)
     press = models.CharField(max_length=20, null=False)
-    price = models.IntegerField(null=False)
+    price = models.FloatField(null=False)
     owner = models.ForeignKey("user", on_delete=models.DO_NOTHING)
     borrowed_times = models.IntegerField(default=0, null=False)
     state_code = models.IntegerField(default=0, null=False)
