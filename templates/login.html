@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <title>login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
+    <style>
+        body{
+            background: #eee
+            url(http://subtlepatterns.com/patterns/sativa.png);
+        }
+        html,body{
+            position: relative;
+            height: 100%;
+        }
+        a {
+            color: #aaaaaa;
+            transition: all ease-in-out 200ms;
+        }
+        a:hover {
+            color: #333333;
+            text-decoration: none;
+        }
+        .login-form-1 {
+            max-width: 300px;
+            border-radius: 5px;
+
+        }
+        .login-form-1 .form-control {
+            border: 0;
+            box-shadow: 0 0 0;
+            border-radius: 0;
+            background: transparent;
+            color: #555555;
+            padding: 7px 0;
+            font-weight: bold;
+            height:auto;
+        }
+        .login-form-1 .form-control::-webkit-input-placeholder {
+            color: #999999;
+        }
+        .login-form-1 .form-control:-moz-placeholder,
+        .login-form-1 .form-control::-moz-placeholder,
+        .login-form-1 .form-control:-ms-input-placeholder {
+            color: #999999;
+        }
+        .login-form-1 .form-group {
+            margin-bottom: 0;
+            border-bottom: 2px solid #efefef;
+            padding-right: 20px;
+            position: relative;
+        }
+        .login-group {
+            background: #ffffff;
+            color: #999999;
+            padding: 10px 20px;
+        }
+        .login-group-checkbox {
+            padding: 5px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="text-center" style="padding: 50px 0" >
+        <div class="badge badge-primary" style="font-size: larger">图书管理系统</div>
+        <br><br>
+        <div class="offset-md-4 col-md-4 ">
+            <ul class="nav nav-tabs nav-justified">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">登录</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="register.html">注册</a>
+                </li>
+            </ul>
+            <form action=""  class="text-left">
+                <div style="position: relative">
+                    <div class="login-group">
+                        <div class="form-group">
+                            <label for="lg_username" class="sr-only">Username</label>
+                            <input type="text" class="form-control" id="lg_username" placeholder="学号">
+                        </div>
+                        <div class="form-group">
+                            <label for="lg_password" class="sr-only">Password</label>
+                            <input type="password" class="form-control" id="lg_password"  placeholder="密码">
+                        </div>
+                        <div class="form-group login-group-checkbox">
+                            <input type="checkbox" id="lg_remember" >
+                            <label for="lg_remember">记住密码</label>
+                        </div>
+                        <button class="btn btn-lg btn-primary btn-block" id="login_btn" type="submit" onclick="login();">登录</button>
+                        <p>新用户？ <a href="register.html">创建账号</a></p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="scripts/jquery.js"></script>
+<script type="text/javascript">
+    $(function(){ //获取cookie
+        var loginCode = $.cookie("login_code"); //获取cookie中的用户名
+        var pwd =  $.cookie("pwd"); //获取cookie中的登陆密码
+        if(pwd){//密码存在的话把“记住用户名和密码”复选框勾选住
+            $("#lg_remember").attr("checked","true");
+        }
+        if(loginCode){//用户名存在的话把用户名填充到用户名文本框
+            $("#lg_username").val(loginCode);
+        }
+        if(pwd){//密码存在的话把密码填充到密码文本框
+            $("#lg_password").val(pwd);
+        }
+    });
+    function setCookie(){ //设置cookie
+        var loginCode = $("#lg_username").val(); //获取用户名信息
+        var pwd = $("#lg_password").val(); //获取登陆密码信息
+        var checked = $("input[type='checkbox']").is(":checked");//获取“是否记住密码”复选框
+
+        if(checked){ //判断是否选中了“记住密码”复选框
+            $.cookie("login_code",loginCode);//调用jquery.cookie.js中的方法设置cookie中的用户名
+            $.cookie("pwd",pwd);//调用jquery.cookie.js中的方法设置cookie中的登陆密码，并使用base64（jquery.base64.js）进行加密
+        }else{
+            $.cookie("pwd", null);
+        }
+    }
+    $("#login_btn").click(function () {
+        var userName = $('#lg_username').val();
+        var userPass = $('#lg_password').val();
+        if(userName == ''){
+            alert("请输入用户名。");
+            return;
+        }
+        if(userPass == ''){
+            alert("请输入密码。");
+            return;
+        }
+        //判断是否选中复选框，如果选中，添加cookie
+        if($("input[type='checkbox']").is(":checked")){
+            //添加cookie
+            setCookie();
+        }
+
+        //csrf部分
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            crossDomain: false, // obviates need for sameOrigin test
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        //ajax待添加
+
+    //     $.ajax({
+    //         type : "post",
+    //         url : "",
+    //         data : {
+    //             id : userName,
+    //             password : userPass
+    //         },
+    //         success : function (data) {
+    //             if (data){
+    //                 if (data.message==''){
+    //                     //由后端提供返回数据进行操作，路由交由后端进行，前端不负责成功后的页面跳转
+    //                 }
+    //             }
+    //         }
+    //     })
+    // });
+</script>
+</body>
+</html>
