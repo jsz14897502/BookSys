@@ -17,7 +17,6 @@ class book_list(models.Model):
 class borrow(models.Model):
     id = models.AutoField(primary_key=True)
     book_name = models.ForeignKey("book_list", on_delete=models.DO_NOTHING)
-    owner = models.ForeignKey("user", on_delete=models.DO_NOTHING)
     end_time = models.DateTimeField(null=False)
     previous = models.ForeignKey("user", on_delete=models.DO_NOTHING)
 
@@ -32,15 +31,14 @@ class request(models.Model):
     id = models.AutoField(primary_key=True)
     book_name = models.ForeignKey("book_list", on_delete=models.DO_NOTHING)
     cretime = models.DateTimeField(null=False)
-    requester = models.ForeignKey("user", on_delete=models.DO_NOTHING)
     owner = models.ForeignKey("user", on_delete=models.DO_NOTHING)
     confirm_code = models.SmallIntegerField(default=0, null=False)
     expiry_time = models.DateTimeField(null=False)
 
 
 class user(models.Model):
-    id = models.AutoField()
-    stu_id = models.CharField(max_length=12, null=False, primary_key=True)
+    id = models.AutoField(primary_key=True)
+    stu_id = models.CharField(max_length=12, null=False)
     user_name = models.CharField(max_length=10, null=False)
     password = models.CharField(max_length=16, null=False)
     email = models.CharField(max_length=30, null=False)
