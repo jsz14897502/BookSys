@@ -1,0 +1,235 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <title>book</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+
+    <!-- Loading Bootstrap -->
+    <link href="{% static 'css/vendor/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Loading Flat UI Pro -->
+    <link href="{% static 'css/flat-ui.css' %}" rel="stylesheet">
+    <style>
+      @media screen and (max-width: 767px) {
+        .row-offcanvas {
+          position: relative;
+          -webkit-transition: all .25s ease-out;
+          -o-transition: all .25s ease-out;
+          transition: all .25s ease-out;
+        }
+
+        .row-offcanvas-left {
+          left: 0;
+        }
+
+        .row-offcanvas-right
+        .sidebar-offcanvas {
+          right: -75%;
+        }
+
+        .row-offcanvas-left
+        .sidebar-offcanvas {
+          left: -75%; /* 6 columns */
+        }
+
+
+        .row-offcanvas-left.active {
+          left: 75%;
+        }
+
+        .sidebar-offcanvas {
+          position: absolute;
+          top: 0;
+          width: 75%;
+        }
+      }
+
+      .fixed-menu{
+        position: fixed;
+        bottom: 1.5cm;
+        right: 10px;
+        z-index: 99;
+      }
+
+    </style>
+  </head>
+  <body>
+
+  <nav class="navbar navbar-default navbar-expand-lg navbar-fixed-top" role="navigation">
+    <div class="container">
+      <a class="navbar-brand" href="#">书籍管理系统</a>
+      <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse-01"></button>
+      <div class="collapse navbar-collapse" id="navbar-collapse-01">
+        <ul class="nav navbar-nav mr-auto">
+          <li class="active"><a href="#">书籍</a></li>
+          <li><a href="#">个人界面</a></li>
+        </ul>
+        <form class="navbar-form form-inline my-2 my-lg-0" action="#" role="search">
+          <div class="form-group">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Search" id="search-query-3">
+              <span class="input-group-btn">
+                <button type="submit" class="btn"><span class="fui-search"></span></button>
+              </span>
+            </div>
+          </div>
+        </form>
+      </div><!-- /.navbar-collapse -->
+    </div>
+  </nav><!-- /navbar -->
+
+
+  <div class="d-sm-none fixed-menu">
+    <button type="button" class="btn btn-info" data-toggle="offcanvas"><span class="fui-list-large-thumbnails"></span><br><span class="btn-tip">分类</span></button>
+  </div>
+
+
+  <div class="container">
+    <div class="jumbotron-fluid">
+    <h3>使用说明</h3>
+    <p>。。。</p>
+  </div>
+  </div>
+
+  <div class="container">
+    <div class="row row-offcanvas row-offcanvas-left">
+      <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar">
+        <div class="list-group" style="position: fixed;width: 4cm">
+          <a href="#" class="list-group-item">linux</a>
+          <a href="#" class="list-group-item">c++</a>
+          <a href="#" class="list-group-item">php</a>
+          <a href="#" class="list-group-item">...</a>
+          <a href="#" class="list-group-item">...</a>
+        </div>
+      </div>
+
+      <div class="col-xs-12 col-sm-9">
+        <div class="row">
+          <div class="col-lg-4 col-xs-6">
+            <div class="tile">
+              <img src="http://ec4.images-amazon.com/images/I/51EUI039ySL._BO2,204,203,200_PIsitb-sticker-arrow-click,TopRight,35,-76_AA300_SH20_OU28_.jpg" alt="Compas" class="big-illustration">
+              <br><br>
+              <h3 class="tile-title">Linux/UNIX系统编程手册</h3>
+              <p>
+                作者: 凯利斯克 (Michael Kerrisk)
+                <br>
+                译者： 孙剑
+                <br>
+                出版社: 人民邮电出版社
+                <br>
+                ISBN: 9787115328670
+              </p>
+              <a class="btn btn-primary btn-large btn-block" href="#">查看详情</a>
+            </div>
+          </div>                      <!--/.col-xs-6.col-lg-4-->
+          <div class="col-lg-4 col-xs-6">
+            <div class="tile">
+              <img src="http://ec4.images-amazon.com/images/I/51EUI039ySL._BO2,204,203,200_PIsitb-sticker-arrow-click,TopRight,35,-76_AA300_SH20_OU28_.jpg" alt="Compas" class="big-illustration">
+              <br><br>
+              <h3 class="tile-title">Linux/UNIX系统编程手册</h3>
+              <p>
+                作者: 凯利斯克 (Michael Kerrisk)
+                <br>
+                译者： 孙剑
+                <br>
+                出版社: 人民邮电出版社
+                <br>
+                ISBN: 9787115328670
+              </p>
+              <a class="btn btn-primary btn-large btn-block" href="#">查看详情</a>
+            </div>
+          </div>
+          <div class="col-lg-4 col-xs-6">
+            <div class="tile">
+              <img src="http://ec4.images-amazon.com/images/I/51EUI039ySL._BO2,204,203,200_PIsitb-sticker-arrow-click,TopRight,35,-76_AA300_SH20_OU28_.jpg" alt="Compas" class="big-illustration">
+              <br><br>
+              <h3 class="tile-title">Linux/UNIX系统编程手册</h3>
+              <p>
+                作者: 凯利斯克 (Michael Kerrisk)
+                <br>
+                译者： 孙剑
+                <br>
+                出版社: 人民邮电出版社
+                <br>
+                ISBN: 9787115328670
+              </p>
+              <a class="btn btn-primary btn-large btn-block" href="#">查看详情</a>
+            </div>
+          </div>
+          <div class="col-lg-4 col-xs-6">
+            <div class="tile">
+              <img src="http://ec4.images-amazon.com/images/I/51EUI039ySL._BO2,204,203,200_PIsitb-sticker-arrow-click,TopRight,35,-76_AA300_SH20_OU28_.jpg" alt="Compas" class="big-illustration">
+              <br><br>
+              <h3 class="tile-title">Linux/UNIX系统编程手册</h3>
+              <p>
+                作者: 凯利斯克 (Michael Kerrisk)
+                <br>
+                译者： 孙剑
+                <br>
+                出版社: 人民邮电出版社
+                <br>
+                ISBN: 9787115328670
+              </p>
+              <a class="btn btn-primary btn-large btn-block" href="#">查看详情</a>
+            </div>
+          </div>
+          <div class="col-lg-4 col-xs-6">
+            <div class="tile">
+              <img src="http://ec4.images-amazon.com/images/I/51EUI039ySL._BO2,204,203,200_PIsitb-sticker-arrow-click,TopRight,35,-76_AA300_SH20_OU28_.jpg" alt="Compas" class="big-illustration">
+              <br><br>
+              <h3 class="tile-title">Linux/UNIX系统编程手册</h3>
+              <p>
+                作者: 凯利斯克 (Michael Kerrisk)
+                <br>
+                译者： 孙剑
+                <br>
+                出版社: 人民邮电出版社
+                <br>
+                ISBN: 9787115328670
+              </p>
+              <a class="btn btn-primary btn-large btn-block" href="#">查看详情</a>
+            </div>
+          </div>
+          <div class="col-lg-4 col-xs-6">
+            <div class="tile">
+              <img src="http://ec4.images-amazon.com/images/I/51EUI039ySL._BO2,204,203,200_PIsitb-sticker-arrow-click,TopRight,35,-76_AA300_SH20_OU28_.jpg" alt="Compas" class="big-illustration">
+              <br><br>
+              <h3 class="tile-title">Linux/UNIX系统编程手册</h3>
+              <p>
+                作者: 凯利斯克 (Michael Kerrisk)
+                <br>
+                译者： 孙剑
+                <br>
+                出版社: 人民邮电出版社
+                <br>
+                ISBN: 9787115328670
+              </p>
+              <a class="btn btn-primary btn-large btn-block" href="#">查看详情</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <hr>
+
+      <footer>
+        <p>&copy; Company 2014</p>
+      </footer>
+
+
+
+    <script src="{% static 'scripts/jquery.js' %}"></script>
+    <!-- Bootstrap 4 requires Popper.js -->
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="{% static 'scripts/flat-ui.js' %}"></script>
+  <script>
+    $(document).ready(function () {
+      $('[data-toggle="offcanvas"]').click(function () {
+        $('.row-offcanvas').toggleClass('active')
+      });
+    });
+  </script>
+  </body>
+</html>
