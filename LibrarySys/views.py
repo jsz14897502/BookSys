@@ -1,17 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.generic import View
-from .forms import SignupForm
-
-
-class SignupView(View):
-    def get(self, request):
-        form = SignupForm()
-        return render(request, 'register.html', context={"form": form})
-
-    def post(self, request):
-        form = SignupForm(request.POST)
-
 
 
 def login(request):

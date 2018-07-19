@@ -22,9 +22,8 @@ urlpatterns = [
     path("library/", include("LibrarySys.urls")),
     path('', views.login, name="login"),
     path('login/', views.login, name="login"),
-    path('register/', views.SignupView.as_view(), name="register"),
+    path('register/', views.signup, name="register"),
     path('index/', views.index, name="index"),
-
 
 ]
 

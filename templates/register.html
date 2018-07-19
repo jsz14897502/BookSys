@@ -76,53 +76,45 @@
                     <a class="nav-link active" href="{% url 'register' %}">注册</a>
                 </li>
             </ul>
-            <form action=""  class="text-left" method="post">
-                <table>
-                    {{ form.as_table }}
-                    <tr>
-                        <td></td>
-                        <td><input type="submit" value="提交"></td>
-                    </tr>
-                </table>
+            <form action=""  class="text-left">
+                <div style="position: relative">
+                    <div class="login-group">
+                        <div class="form-group">
+                            <label for="student_id">学号</label>
+                            <input type="text" class="form-control" id="student_id">
+                            <lable id="si" class="text-warning small"></lable>
+                        </div>
+                        <div class="form-group">
+                            <label for="name">用户名</label>
+                            <input type="text" class="form-control" id="name">
+                            <lable id="na" class="text-warning small"></lable>
+                        </div>
+                        <div class="form-group">
+                            <label for="password1">密码</label>
+                            <input type="password" class="form-control" id="password1">
+                            <lable id="p1" class="text-warning small"></lable>
+                        </div>
+                        <div class="form-group">
+                            <label for="password2">确认密码</label>
+                            <input type="password" class="form-control" id="password2">
+                            <lable id="p2" class="text-warning small"></lable>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">邮箱</label>
+                            <input type="text" class="form-control" id="email">
+                            <lable id="em" class="text-warning small"></lable>
+                        </div>
+                        <div class="form-group">
+                            <label for="tel">手机</label>
+                            <input type="text" class="form-control" id="tel">
+                            <lable id="te" class="text-warning small"></lable>
+                        </div>
+                        <button class="btn btn-lg btn-primary btn-block" id="register_btn" type="submit">注册</button>
+                        <br>
+                        <p class="text-danger">暂不支持直接找回密码，请务必记牢！如需找回请联系管理人员</p>
+                    </div>
+                </div>
             </form>
-{#                <div style="position: relative">#}
-{#                    <div class="login-group">#}
-{#                        <div class="form-group">#}
-{#                            <label for="student_id">学号</label>#}
-{#                            <input type="text" class="form-control" id="student_id">#}
-{#                            <lable id="si" class="text-warning small"></lable>#}
-{#                        </div>#}
-{#                        <div class="form-group">#}
-{#                            <label for="name">用户名</label>#}
-{#                            <input type="text" class="form-control" id="name">#}
-{#                            <lable id="na" class="text-warning small"></lable>#}
-{#                        </div>#}
-{#                        <div class="form-group">#}
-{#                            <label for="password1">密码</label>#}
-{#                            <input type="password" class="form-control" id="password1">#}
-{#                            <lable id="p1" class="text-warning small"></lable>#}
-{#                        </div>#}
-{#                        <div class="form-group">#}
-{#                            <label for="password2">确认密码</label>#}
-{#                            <input type="password" class="form-control" id="password2">#}
-{#                            <lable id="p2" class="text-warning small"></lable>#}
-{#                        </div>#}
-{#                        <div class="form-group">#}
-{#                            <label for="email">邮箱</label>#}
-{#                            <input type="text" class="form-control" id="email">#}
-{#                            <lable id="em" class="text-warning small"></lable>#}
-{#                        </div>#}
-{#                        <div class="form-group">#}
-{#                            <label for="tel">手机</label>#}
-{#                            <input type="text" class="form-control" id="tel">#}
-{#                            <lable id="te" class="text-warning small"></lable>#}
-{#                        </div>#}
-{#                        <button class="btn btn-lg btn-primary btn-block" id="register_btn" type="submit">注册</button>#}
-{#                        <br>#}
-{#                        <p class="text-danger">暂不支持直接找回密码，请务必记牢！如需找回请联系管理人员</p>#}
-{#                    </div>#}
-{#                </div>#}
-{#            </form>#}
         </div>
     </div>
 </div>
