@@ -1,235 +1,151 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
+<head>
+    <!-- Required meta tags -->
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'LibrarySys/css/vendor/bootstrap.min.css' %}">
     <title>book</title>
-    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-
-    <!-- Loading Bootstrap -->
-    <link href="{% static 'LibrarySys/css/vendor/bootstrap.min.css' %}" rel="stylesheet">
-    <!-- Loading Flat UI Pro -->
-    <link href="{% static 'LibrarySys/css/flat-ui.css' %}" rel="stylesheet">
     <style>
-      @media screen and (max-width: 767px) {
-        .row-offcanvas {
-          position: relative;
-          -webkit-transition: all .25s ease-out;
-          -o-transition: all .25s ease-out;
-          transition: all .25s ease-out;
+        body {
+            margin-top: 50px;
+            background: #eee
+            url(http://subtlepatterns.com/patterns/sativa.png);
         }
-
-        .row-offcanvas-left {
-          left: 0;
-        }
-
-        .row-offcanvas-right
-        .sidebar-offcanvas {
-          right: -75%;
-        }
-
-        .row-offcanvas-left
-        .sidebar-offcanvas {
-          left: -75%; /* 6 columns */
-        }
-
-
-        .row-offcanvas-left.active {
-          left: 75%;
-        }
-
-        .sidebar-offcanvas {
-          position: absolute;
-          top: 0;
-          width: 75%;
-        }
-      }
-
-      .fixed-menu{
-        position: fixed;
-        bottom: 1.5cm;
-        right: 10px;
-        z-index: 99;
-      }
-
     </style>
-  </head>
-  <body>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top nav-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><h3>图书管理系统</h3></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-  <nav class="navbar navbar-default navbar-expand-lg navbar-fixed-top" role="navigation">
-    <div class="container">
-      <a class="navbar-brand" href="#">书籍管理系统</a>
-      <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse-01"></button>
-      <div class="collapse navbar-collapse" id="navbar-collapse-01">
-        <ul class="nav navbar-nav mr-auto">
-          <li class="active"><a href="#">书籍</a></li>
-          <li><a href="#">个人界面</a></li>
-        </ul>
-        <form class="navbar-form form-inline my-2 my-lg-0" action="#" role="search">
-          <div class="form-group">
-            <div class="input-group">
-              <input type="text" class="form-control" placeholder="Search" id="search-query-3">
-              <span class="input-group-btn">
-                <button type="submit" class="btn"><span class="fui-search"></span></button>
-              </span>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">书籍</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">个人中心</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            书籍分类
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">Linux</a>
+                            <a class="dropdown-item" href="#">PHP</a>
+                            <a class="dropdown-item" href="#">....</a>
+                            <a class="dropdown-item" href="#">....</a>
+                            <a class="dropdown-item" href="#">....</a>
+                        </div>
+                    </li>
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+                </form>
             </div>
-          </div>
-        </form>
-      </div><!-- /.navbar-collapse -->
-    </div>
-  </nav><!-- /navbar -->
-
-
-  <div class="d-sm-none fixed-menu">
-    <button type="button" class="btn btn-info" data-toggle="offcanvas"><span class="fui-list-large-thumbnails"></span><br><span class="btn-tip">分类</span></button>
-  </div>
-
-
-  <div class="container">
-    <div class="jumbotron-fluid">
-    <h3>使用说明</h3>
-    <p>。。。</p>
-  </div>
-  </div>
-
-  <div class="container">
-    <div class="row row-offcanvas row-offcanvas-left">
-      <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar">
-        <div class="list-group" style="position: fixed;width: 4cm">
-          <a href="#" class="list-group-item">linux</a>
-          <a href="#" class="list-group-item">c++</a>
-          <a href="#" class="list-group-item">php</a>
-          <a href="#" class="list-group-item">...</a>
-          <a href="#" class="list-group-item">...</a>
         </div>
-      </div>
+    </nav>
+</header>
+<div class="container py-md-5 py-3">
+    <div class="row flex-xl-nowrap">
+        <div class="row mb-2">
+            <!--循环这个元素-->
+            <div class="col-md-6">
+                <div class="card flex-md-row mb-4 box-shadow h-md-260">
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <h3 class="mb-0">
+                            <a class="text-dark" href="#">Linux Shell脚本攻略</a>
+                        </h3>
+                        <div class="mb-1 text-muted">作者 ：Sarath Lakshman</div>
+                        <div class="mb-1 text-muted">译者 ：门佳</div>
+                        <div class="mb-1 text-muted">ISBN : 9787115264725</div>
+                        <div class="mb-1 text-muted">出版社：人民邮电出版社</div>
+                        <p class="card-text mb-auto">简介：暂无简介 <br><br></p>
+                        <button type="button" class="btn btn-outline-primary">详情</button>
+                    </div>
+                    <img class="card-img-right flex-auto d-none d-md-block"  alt="书籍" style="width: 200px; height: 275px;" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1532063370240&di=333b4dd24e984d3e403fdd8668f120f8&imgtype=0&src=http%3A%2F%2Fimg37.ddimg.cn%2F35%2F1%2F1248303707-3_w_2.jpg">
+                </div>
+            </div>
+            <!--end-->
+            <div class="col-md-6">
+                <div class="card flex-md-row mb-4 box-shadow h-md-260">
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <h3 class="mb-0">
+                            <a class="text-dark" href="#">Linux Shell脚本攻略</a>
+                        </h3>
+                        <div class="mb-1 text-muted">作者 ：Sarath Lakshman</div>
+                        <div class="mb-1 text-muted">译者 ：门佳</div>
+                        <div class="mb-1 text-muted">ISBN : 9787115264725</div>
+                        <div class="mb-1 text-muted">出版社：人民邮电出版社</div>
+                        <p class="card-text mb-auto">简介：暂无简介 <br><br></p>
+                        <button type="button" class="btn btn-outline-primary">详情</button>
+                    </div>
+                    <img class="card-img-right flex-auto d-none d-md-block"  alt="书籍" style="width: 200px; height: 275px;" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1532063370240&di=333b4dd24e984d3e403fdd8668f120f8&imgtype=0&src=http%3A%2F%2Fimg37.ddimg.cn%2F35%2F1%2F1248303707-3_w_2.jpg">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card flex-md-row mb-4 box-shadow h-md-260">
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <h3 class="mb-0">
+                            <a class="text-dark" href="#">Linux Shell脚本攻略</a>
+                        </h3>
+                        <div class="mb-1 text-muted">作者 ：Sarath Lakshman</div>
+                        <div class="mb-1 text-muted">译者 ：门佳</div>
+                        <div class="mb-1 text-muted">ISBN : 9787115264725</div>
+                        <div class="mb-1 text-muted">出版社：人民邮电出版社</div>
+                        <p class="card-text mb-auto">简介：暂无简介 <br><br></p>
+                        <button type="button" class="btn btn-outline-primary">详情</button>
+                    </div>
+                    <img class="card-img-right flex-auto d-none d-md-block"  alt="书籍" style="width: 200px; height: 275px;" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1532063370240&di=333b4dd24e984d3e403fdd8668f120f8&imgtype=0&src=http%3A%2F%2Fimg37.ddimg.cn%2F35%2F1%2F1248303707-3_w_2.jpg">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card flex-md-row mb-4 box-shadow h-md-260">
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <h3 class="mb-0">
+                            <a class="text-dark" href="#">Linux Shell脚本攻略</a>
+                        </h3>
+                        <div class="mb-1 text-muted">作者 ：Sarath Lakshman</div>
+                        <div class="mb-1 text-muted">译者 ：门佳</div>
+                        <div class="mb-1 text-muted">ISBN : 9787115264725</div>
+                        <div class="mb-1 text-muted">出版社：人民邮电出版社</div>
+                        <p class="card-text mb-auto">简介：暂无简介 <br><br></p>
+                        <button type="button" class="btn btn-outline-primary">详情</button>
+                    </div>
+                    <img class="card-img-right flex-auto d-none d-md-block"  alt="书籍" style="width: 200px; height: 275px;" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1532063370240&di=333b4dd24e984d3e403fdd8668f120f8&imgtype=0&src=http%3A%2F%2Fimg37.ddimg.cn%2F35%2F1%2F1248303707-3_w_2.jpg">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card flex-md-row mb-4 box-shadow h-md-260">
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <h3 class="mb-0">
+                            <a class="text-dark" href="#">Linux Shell脚本攻略</a>
+                        </h3>
+                        <div class="mb-1 text-muted">作者 ：Sarath Lakshman</div>
+                        <div class="mb-1 text-muted">译者 ：门佳</div>
+                        <div class="mb-1 text-muted">ISBN : 9787115264725</div>
+                        <div class="mb-1 text-muted">出版社：人民邮电出版社</div>
+                        <p class="card-text mb-auto">简介：暂无简介 <br><br></p>
+                        <button type="button" class="btn btn-outline-primary">详情</button>
+                    </div>
+                    <img class="card-img-right flex-auto d-none d-md-block"  alt="书籍" style="width: 200px; height: 275px;" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1532063370240&di=333b4dd24e984d3e403fdd8668f120f8&imgtype=0&src=http%3A%2F%2Fimg37.ddimg.cn%2F35%2F1%2F1248303707-3_w_2.jpg">
+                </div>
+            </div>
 
-      <div class="col-xs-12 col-sm-9">
-        <div class="row">
-          <div class="col-lg-4 col-xs-6">
-            <div class="tile">
-              <img src="http://ec4.images-amazon.com/images/I/51EUI039ySL._BO2,204,203,200_PIsitb-sticker-arrow-click,TopRight,35,-76_AA300_SH20_OU28_.jpg" alt="Compas" class="big-illustration">
-              <br><br>
-              <h3 class="tile-title">Linux/UNIX系统编程手册</h3>
-              <p>
-                作者: 凯利斯克 (Michael Kerrisk)
-                <br>
-                译者： 孙剑
-                <br>
-                出版社: 人民邮电出版社
-                <br>
-                ISBN: 9787115328670
-              </p>
-              <a class="btn btn-primary btn-large btn-block" href="#">查看详情</a>
-            </div>
-          </div>                      <!--/.col-xs-6.col-lg-4-->
-          <div class="col-lg-4 col-xs-6">
-            <div class="tile">
-              <img src="http://ec4.images-amazon.com/images/I/51EUI039ySL._BO2,204,203,200_PIsitb-sticker-arrow-click,TopRight,35,-76_AA300_SH20_OU28_.jpg" alt="Compas" class="big-illustration">
-              <br><br>
-              <h3 class="tile-title">Linux/UNIX系统编程手册</h3>
-              <p>
-                作者: 凯利斯克 (Michael Kerrisk)
-                <br>
-                译者： 孙剑
-                <br>
-                出版社: 人民邮电出版社
-                <br>
-                ISBN: 9787115328670
-              </p>
-              <a class="btn btn-primary btn-large btn-block" href="#">查看详情</a>
-            </div>
-          </div>
-          <div class="col-lg-4 col-xs-6">
-            <div class="tile">
-              <img src="http://ec4.images-amazon.com/images/I/51EUI039ySL._BO2,204,203,200_PIsitb-sticker-arrow-click,TopRight,35,-76_AA300_SH20_OU28_.jpg" alt="Compas" class="big-illustration">
-              <br><br>
-              <h3 class="tile-title">Linux/UNIX系统编程手册</h3>
-              <p>
-                作者: 凯利斯克 (Michael Kerrisk)
-                <br>
-                译者： 孙剑
-                <br>
-                出版社: 人民邮电出版社
-                <br>
-                ISBN: 9787115328670
-              </p>
-              <a class="btn btn-primary btn-large btn-block" href="#">查看详情</a>
-            </div>
-          </div>
-          <div class="col-lg-4 col-xs-6">
-            <div class="tile">
-              <img src="http://ec4.images-amazon.com/images/I/51EUI039ySL._BO2,204,203,200_PIsitb-sticker-arrow-click,TopRight,35,-76_AA300_SH20_OU28_.jpg" alt="Compas" class="big-illustration">
-              <br><br>
-              <h3 class="tile-title">Linux/UNIX系统编程手册</h3>
-              <p>
-                作者: 凯利斯克 (Michael Kerrisk)
-                <br>
-                译者： 孙剑
-                <br>
-                出版社: 人民邮电出版社
-                <br>
-                ISBN: 9787115328670
-              </p>
-              <a class="btn btn-primary btn-large btn-block" href="#">查看详情</a>
-            </div>
-          </div>
-          <div class="col-lg-4 col-xs-6">
-            <div class="tile">
-              <img src="http://ec4.images-amazon.com/images/I/51EUI039ySL._BO2,204,203,200_PIsitb-sticker-arrow-click,TopRight,35,-76_AA300_SH20_OU28_.jpg" alt="Compas" class="big-illustration">
-              <br><br>
-              <h3 class="tile-title">Linux/UNIX系统编程手册</h3>
-              <p>
-                作者: 凯利斯克 (Michael Kerrisk)
-                <br>
-                译者： 孙剑
-                <br>
-                出版社: 人民邮电出版社
-                <br>
-                ISBN: 9787115328670
-              </p>
-              <a class="btn btn-primary btn-large btn-block" href="#">查看详情</a>
-            </div>
-          </div>
-          <div class="col-lg-4 col-xs-6">
-            <div class="tile">
-              <img src="http://ec4.images-amazon.com/images/I/51EUI039ySL._BO2,204,203,200_PIsitb-sticker-arrow-click,TopRight,35,-76_AA300_SH20_OU28_.jpg" alt="Compas" class="big-illustration">
-              <br><br>
-              <h3 class="tile-title">Linux/UNIX系统编程手册</h3>
-              <p>
-                作者: 凯利斯克 (Michael Kerrisk)
-                <br>
-                译者： 孙剑
-                <br>
-                出版社: 人民邮电出版社
-                <br>
-                ISBN: 9787115328670
-              </p>
-              <a class="btn btn-primary btn-large btn-block" href="#">查看详情</a>
-            </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-    <hr>
-
-      <footer>
-        <p>&copy; Company 2014</p>
-      </footer>
+</div>
 
 
-
-    <script src="{% static 'LibrarySys/scripts/jquery.js' %}"></script>
-    <!-- Bootstrap 4 requires Popper.js -->
-    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-    <script src="{% static 'LibrarySys/scripts/flat-ui.js' %}"></script>
-  <script>
-    $(document).ready(function () {
-      $('[data-toggle="offcanvas"]').click(function () {
-        $('.row-offcanvas').toggleClass('active')
-      });
-    });
-  </script>
-  </body>
+<script src="{% static 'LibrarySys/scripts/jquery.js' %}"></script>
+<script src="https://cdn.bootcss.com/popper.js/1.14.3/esm/popper.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+</body>
 </html>
