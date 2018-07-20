@@ -25,7 +25,6 @@ def login_check(request):
         # 记录登录时间
         login_time = now()
         login_time_record = login_record(user=find_user[0], login_time=login_time)
-        print(login_time)
         login_time_record.save()
 
         return response
@@ -47,6 +46,7 @@ def register_check(request):
     password = request.POST.get('password')
     email = request.POST.get('email')
     phone = request.POST.get('phone')
+    print("ajax数据获取正常")
     # 进行用户存在判断
     signup_time = now()
     find_user = user.objects.filter(stu_id=stu_id)
@@ -55,12 +55,13 @@ def register_check(request):
         new_user = user(stu_id=stu_id, user_name=user_name, password=password,
                         email=email, phone=phone, cretime=signup_time, last_time=signup_time)
         new_user.save()
+        print("用户注册成功")
         # 记录该次登录时间
         last_registered_user = user.objects.filter(stu_id=stu_id) # 找到刚刚用这个学号注册的用户
-        user_id = last_registered_user[0].id # 获取这个用户的 id
         login_time = signup_time
-        login_time_record = login_record(user=user_id, login_time=login_time)
+        login_time_record = login_record(user=last_registered_user[0], login_time=login_time)
         login_time_record.save()
+        print("登录情况已记录")
         # 创建 response
         response = JsonResponse({'msg': 'success'})
         response.set_cookie(key='stu_id', value=stu_id, max_age=(4*60*60))
@@ -82,5 +83,10 @@ def test(request):
     """测试用的，不用管"""
     # find_user = user.objects.filter(stu_id='001', password='python')
     # print(find_user[0].stu_id)
+    find_user = user.objects.filter(stu_id="002", password="python")
+    login_time = now()
+    login_time_record = login_record(user=find_user[0], login_time=login_time)
+    print(login_time)
+    login_time_record.save()
     return HttpResponse("shit....")
 

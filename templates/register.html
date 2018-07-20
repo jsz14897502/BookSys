@@ -132,7 +132,7 @@
             $("#si").text('错误，请填写正确的学号!');
             $("#register_btn").attr("disabled",true)
         }
-    })
+    });
 
     $("#name").blur(function () {
         var ren= /^[a-z]*$/g;
@@ -149,24 +149,25 @@
             $("#na").text('用户名必须由小写字母组成');
             $("#register_btn").attr("disabled",true)
         }
-    })
+    });
 
     $("#password1").blur(function () {
-        var pass1= $("#password1").val();
-        var pattern = /^\w{6,15}$/;
-        if(pattern.test(pass1)){
-            $("#p1").text('');
-            $('#register_btn').attr('disabled', false);
+            var pass1 = $("#password1").val();
+            var pattern = /^\w{6,15}$/;
+            if (pattern.test(pass1)) {
+                $("#p1").text('');
+                $('#register_btn').attr('disabled', false);
+            }
+            else if (pass1 == "" || pass1 == null) {
+                $("#p1").text('密码不能为空');
+                $("#register_btn").attr("disabled", true)
+            }
+            else {
+                $("#p1").text('密码需在6-15位之间');
+                $("#register_btn").attr("disabled", true)
+            }
         }
-        else if(pass1 =="" || pass1==null){
-            $("#p1").text('密码不能为空');
-            $("#register_btn").attr("disabled",true)
-        }
-        else{
-            $("#p1").text('密码需在6-15位之间');
-            $("#register_btn").attr("disabled",true)
-        }
-    })
+    )
 
     $("#password2").blur(function () {
         var pass1= $("#password1").val();
@@ -179,7 +180,7 @@
             $("#p2").text('两次输入密码不一致！')
             $("#register_btn").attr("disabled",true)
         }
-    })
+    });
 
     $("#email").blur(function () {
         var email= $("#email").val();
@@ -191,7 +192,7 @@
             $("#em").text('格式错误，请填写正确的邮箱!');
             $("#register_btn").attr("disabled",true)
         }
-    })
+    });
 
     $("#tel").blur(function () {
         var tel= $("#tel").val();
@@ -203,11 +204,11 @@
             $("#te").text('格式错误，请填写正确的手机号码以便联系!');
             $("#register_btn").attr("disabled",true)
         }
-    })
+    });
 
     //ajax post相关数据
-    $("#register_btn").click(function ( ) {
-
+    $("#register_btn").click(function (event) {
+        event.preventDefault();
         //此部分代码为解决django自带的csrf防护
         function getCookie(name) {
             var cookieValue = null;
@@ -244,6 +245,7 @@
         //var pass2= $("#password2").val();
         var email= $("#email").val();
         var tel =$("#tel").val();
+
         if(id == ''){
             alert("请输入账号");
             return false;
@@ -275,12 +277,13 @@
                 'user_name' : name,
                 'password' :pass1 ,
                  'phone' : tel,
-                'email' : email
+                'email' : email,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
             },
             success : function (data) {
                 if (data){
                     if (data.msg=='success'){
-                        window.location.href="/login/";
+                        window.location.href="/index/";
                         //由后端提供返回数据进行操作，路由交由后端进行，前端不负责成功后的页面跳转
                     }
                     else if(data.msg=='error'){
@@ -290,12 +293,12 @@
                 else{
                     alert("没有能拿到对应msg")
                 }
-            }
+            },
             error : function () {
                 alert("发生未知错误")
             }
         })
-    })
+    });
 </script>
 </body>
 </html>
