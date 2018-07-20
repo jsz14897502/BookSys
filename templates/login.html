@@ -102,6 +102,7 @@
 
 
 <script src="{% static 'LibrarySys/scripts/jquery.js' %}"></script>
+<script src="{% static 'LibrarySys/scripts/myajax.js' %}"></script>
 <script type="text/javascript">
     $(function(){ //获取cookie
         var loginCode = $.cookie("login_code"); //获取cookie中的用户名
@@ -128,71 +129,81 @@
             $.cookie("pwd", null);
         }
     }
-    $("#login_btn").click(function () {
+    $("#login_btn").click(function (event) {
+        event.preventDefault();
         var userName = $('#lg_username').val();
         var userPass = $('#lg_password').val();
+
         if(userName == ''){
             alert("请输入用户名。");
-            return;
+            return ;
         }
         if(userPass == ''){
             alert("请输入密码。");
-            return;
-        }
-        //判断是否选中复选框，如果选中，添加cookie
-        if($("input[type='checkbox']").is(":checked")){
-            //添加cookie
-            setCookie();
+            return ;
         }
 
-        //csrf部分
-        function getCookie(name) {
-            var cookieValue = null;
-            if (document.cookie && document.cookie != '') {
-                var cookies = document.cookie.split(';');
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = jQuery.trim(cookies[i]);
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
+        myajax.post({
+            url : "/login_check/",
+            data : {
+                stu_id : userName,
+                password : userPass
+            },
+            'success' : function (data) {
+                if (data) {
+                    if (data.msg == 'success') {
+                        window.location.href = "/index/";
+                        //由后端提供返回数据进行操作，路由交由后端进行，前端不负责成功后的页面跳转
+                    }
+                    else if (data.msg == 'error') {
+                        alert("错误");
                     }
                 }
-            }
-            return cookieValue;
-        }
-        var csrftoken = getCookie('csrftoken');
-        function csrfSafeMethod(method) {
-            // these HTTP methods do not require CSRF protection
-            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-        }
-        $.ajaxSetup({
-            crossDomain: false, // obviates need for sameOrigin test
-            beforeSend: function(xhr, settings) {
-                if (!csrfSafeMethod(settings.type)) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                else {
+                    alert("没有能拿到对应msg");
                 }
+            },
+            'fail': function (data) {
+                console.log(error);
             }
         });
+    });
+
+
+        {#//判断是否选中复选框，如果选中，添加cookie#}
+        {#if($("input[type='checkbox']").is(":checked")){#}
+        {#    //添加cookie#}
+        {#    setCookie();#}
+        {#}#}
+
+
 
         //ajax待添加
-
-    //     $.ajax({
-    //         type : "post",
-    //         url : "",
-    //         data : {
-    //             id : userName,
-    //             password : userPass
-    //         },
-    //         success : function (data) {
-    //             if (data){
-    //                 if (data.message==''){
-    //                     //由后端提供返回数据进行操作，路由交由后端进行，前端不负责成功后的页面跳转
-    //                 }
-    //             }
-    //         }
-    //     })
-    // });
+        {#$.ajax({#}
+        {#    type: "post",#}
+        {#    url: "/login_check/",#}
+        {#    data: {#}
+        {#        stu_id: userName,#}
+        {#        password: userPass#}
+        {#    },#}
+        {#    success: function (data) {#}
+        {#        if (data) {#}
+        {#            if (data.msg == 'success') {#}
+        {#                window.location.href = "/index/";#}
+        {#                //由后端提供返回数据进行操作，路由交由后端进行，前端不负责成功后的页面跳转#}
+        {#            }#}
+        {#            else if (data.msg == 'error') {#}
+        {#                alert("错误");#}
+        {#            }#}
+        {#        }#}
+        {#        else {#}
+        {#            alert("没有能拿到对应msg")#}
+        {#        }#}
+        {#    },#}
+        {#    error: function () {#}
+        {#        alert("发生未知错误")#}
+        {#    }#}
+        {#})#}
 </script>
 </body>
 </html>

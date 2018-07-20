@@ -23,9 +23,9 @@ def login_check(request):
         response = JsonResponse({'msg': 'success'})
         response.set_cookie(key='stu_id', value=stu_id, max_age=(4 * 60 * 60))
         # 记录登录时间
-        user_id = find_user[0].id
         login_time = now()
-        login_time_record = login_record(user=user_id, login_time=login_time)
+        login_time_record = login_record(user=find_user[0], login_time=login_time)
+        print(login_time)
         login_time_record.save()
 
         return response
