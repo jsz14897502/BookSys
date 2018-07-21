@@ -19,7 +19,7 @@ from LibrarySys import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("library/", include("LibrarySys.urls")),
+    path("book/", include("LibrarySys.urls")),
     path('', views.login, name="login"),
     path('login/', views.login, name="login"),
     path('login_check/', views.login_check, name="login_check"),

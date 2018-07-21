@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.generic import View
 from django.utils.timezone import now
-from .models import user, login_record
+from .models import user, login_record, book_list
 
 
 def login(request):
@@ -73,7 +73,26 @@ def index(request):
     if len(cookie) is 0:
         return render(request, 'login.html')
     else:
-        return render(request, 'index.html')
+        context = {}
+        book_num = book_list.objects.all().count()
+        context["book_num"] = book_num
+        context["books"] = []
+
+        page_num = int(request.GET.get("page_num"))
+        book_id_num = [(page_num*8 - 7), (page_num*8 - 6), (page_num*8 - 5), (page_num*8 - 4),
+                       (page_num*8 - 3), (page_num*8 - 2), (page_num*8 - 1), (page_num*8)]
+        books = book_list.objects.filter(id__in=book_id_num)
+        for book in books:
+            book_detail = {}
+            book_detail["book_name"] = book.book_name
+            book_detail["author"] =  book.author
+            book_detail["translator"] = book.translator
+            book_detail["isbn"] = book.isbn
+            book_detail["press"] = book.press
+            book_detail["profiles"] = book.profiles
+            context["books"].append(book_detail)
+        print(context)
+        return render(request, 'index.html', context=context)
 
 
 def test(request):
@@ -85,5 +104,16 @@ def test(request):
     # login_time_record = login_record(user=find_user[0], login_time=login_time)
     # print(login_time)
     # login_time_record.save()
+    # dictionary = {'book_num': 3,
+    #               1: ['汇编语言 第三版', '王爽', None, '9787302333142', '清华大学出版社', None],
+    #               2: ['数据库系统概念 第六版', 'Abraham Silberschatz; Henry F. Korth; S. Sudarshan',
+    #                   '杨冬青 李红燕 唐世渭', '9787111400851', '机械工业出版社', None],
+    #               3: ['托马斯微积分 第十版', 'Finney; Weir; Giordano', '叶其孝 王耀东 唐兢', '9787040108231', '高等教育出版社', None]}
+    # for item in dictionary.items():
+    #     print(item)
+    #     # if item.key == "book_num":
+    #     #     pass
+    #     # else:
+    #     #     print(item.value)
     return HttpResponse("shit....")
 
