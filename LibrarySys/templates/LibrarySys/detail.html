@@ -1,0 +1,165 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'LibrarySys/css/vendor/bootstrap.min.css' %}">
+    <title>detail</title>
+    <style>
+        body {
+            margin-top: 50px;
+
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top nav-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'LibrarySys:book_page' %}"><h3>图书管理系统</h3></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'LibrarySys:book_page' %}">书籍</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">个人中心</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            书籍分类
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">Linux</a>
+                            <a class="dropdown-item" href="#">PHP</a>
+                            <a class="dropdown-item" href="#">....</a>
+                            <a class="dropdown-item" href="#">....</a>
+                            <a class="dropdown-item" href="#">....</a>
+                        </div>
+                    </li>
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container  py-md-5 py-3">
+    <h3 class="text-center">书籍信息</h3>
+    <hr>
+    <section>
+    <div class="row my-2">
+        <div class=" offset-1 col-md-6">
+            <h4 class="mb-0 text-dark">{{ book_name }}</h4>
+            <div class="card flex-md-row mb-4 box-shadow h-md-260 my-2">
+                <img class=""  alt="书籍" style="width: 240px; height: 300px;" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1532063370240&di=333b4dd24e984d3e403fdd8668f120f8&imgtype=0&src=http%3A%2F%2Fimg37.ddimg.cn%2F35%2F1%2F1248303707-3_w_2.jpg">
+                <div class="card-body d-flex flex-column align-items-start align-self-center">
+
+                    <div class="mb-1">书籍名称：{{ book_name }}</div>
+                    <div class="mb-1">作者 ：{{ author }}</div>
+                    <div class="mb-1">译者 ：{{ translator }}</div>
+                    <div class="mb-1">ISBN : {{ isbn }}</div>
+                    <div class="mb-1">出版社：{{ press }}</div>
+                    <div class="mb-1">价格：{{ price }}</div>
+                </div>
+            </div>
+            <div class="text-muted">简介:{{ profiles }}</div>
+        </div>
+        <div class="offset-1 col-md-2">
+            <div class="text-success"> <h4>当前评分:</h4><br>暂未开放</div>
+        </div>
+    </div>
+    </section>
+    <hr>
+    <section>
+        <div class="row">
+            <div class=" col-md-9"><h3>书籍状态</h3>
+                <table class="table table-hover my-2">
+                    <tbody>
+                    <tr>
+                        <td>当前拥有者</td>
+                        <td>{{ owner }}</td>
+                    </tr>
+                    <tr>
+                        <td>联系方式</td>
+                        <td>{{ phone }}</td>
+                    </tr>
+                    <tr>
+                        <td>邮箱</td>
+                        <td>{{ email }}</td>
+                    </tr>
+                    <tr>
+                        <td>被借阅次数</td>
+                        <td>{{ borrowed_times }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p class="text-center text-warning">借阅前建议先联系当前持有者!</p>
+                <button class="btn btn-primary">借阅</button>
+            </div>
+
+        </div>
+
+
+
+        <hr>
+    </section>
+    <section>
+        <div class="col-md-8">
+            <h3 class="text-dark">用户评论</h3>
+            <br>
+            {% for comment in comments %}
+            <!--循环这个元素-->
+            <div class="media mb-4">
+                <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="暂无图片" style="width: 50px; height: 50px;">
+                <div class="media-body">
+                    <h5 class="mt-0 text-info">{{ comment.commentator }}</h5>
+                    {{ comment.comment_text }}
+                </div>
+            </div>
+            <!--end-->
+            {% endfor %}
+            <button type="button" class="btn btn-light" id="btu">添加评论</button>
+            <div class="card my-4" id="comment">
+                <h5 class="card-header">发表评论:</h5>
+                <div class="card-body">
+                    <form>
+                        <div class="form-group">
+                            <textarea class="form-control" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+<script src="{% static 'LibrarySys/scripts/jquery.js' %}"></script>
+<script src="https://cdn.bootcss.com/popper.js/1.14.3/esm/popper.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script>
+$(function () {
+    $("#comment").hide()
+    $("#btu").click(function () {
+        //添加ajax给后台判断能否评论
+
+        $("#comment").show();
+    })
+
+})
+
+</script>
+</body>
+</html>
