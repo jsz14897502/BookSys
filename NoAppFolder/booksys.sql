@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50721
 File Encoding         : 65001
 
-Date: 2018-07-18 19:46:45
+Date: 2018-07-22 00:16:13
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -61,7 +61,7 @@ CREATE TABLE `auth_permission` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `auth_permission_content_type_id_codename_01ab375a_uniq` (`content_type_id`,`codename`),
   CONSTRAINT `auth_permission_content_type_id_2f476e4b_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of auth_permission
@@ -99,6 +99,12 @@ INSERT INTO `auth_permission` VALUES ('30', 'Can delete request', '10', 'delete_
 INSERT INTO `auth_permission` VALUES ('31', 'Can add user', '11', 'add_user');
 INSERT INTO `auth_permission` VALUES ('32', 'Can change user', '11', 'change_user');
 INSERT INTO `auth_permission` VALUES ('33', 'Can delete user', '11', 'delete_user');
+INSERT INTO `auth_permission` VALUES ('34', 'Can add book_short_comment_like_and_collection_record', '12', 'add_book_short_comment_like_and_collection_record');
+INSERT INTO `auth_permission` VALUES ('35', 'Can change book_short_comment_like_and_collection_record', '12', 'change_book_short_comment_like_and_collection_record');
+INSERT INTO `auth_permission` VALUES ('36', 'Can delete book_short_comment_like_and_collection_record', '12', 'delete_book_short_comment_like_and_collection_record');
+INSERT INTO `auth_permission` VALUES ('37', 'Can add book_short_comment', '13', 'add_book_short_comment');
+INSERT INTO `auth_permission` VALUES ('38', 'Can change book_short_comment', '13', 'change_book_short_comment');
+INSERT INTO `auth_permission` VALUES ('39', 'Can delete book_short_comment', '13', 'delete_book_short_comment');
 
 -- ----------------------------
 -- Table structure for auth_user
@@ -196,7 +202,7 @@ CREATE TABLE `django_content_type` (
   `model` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `django_content_type_app_label_model_76bd3d3b_uniq` (`app_label`,`model`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of django_content_type
@@ -207,6 +213,8 @@ INSERT INTO `django_content_type` VALUES ('2', 'auth', 'permission');
 INSERT INTO `django_content_type` VALUES ('4', 'auth', 'user');
 INSERT INTO `django_content_type` VALUES ('5', 'contenttypes', 'contenttype');
 INSERT INTO `django_content_type` VALUES ('7', 'LibrarySys', 'book_list');
+INSERT INTO `django_content_type` VALUES ('13', 'LibrarySys', 'book_short_comment');
+INSERT INTO `django_content_type` VALUES ('12', 'LibrarySys', 'book_short_comment_like_and_collection_record');
 INSERT INTO `django_content_type` VALUES ('8', 'LibrarySys', 'borrow');
 INSERT INTO `django_content_type` VALUES ('9', 'LibrarySys', 'login_record');
 INSERT INTO `django_content_type` VALUES ('10', 'LibrarySys', 'request');
@@ -223,7 +231,7 @@ CREATE TABLE `django_migrations` (
   `name` varchar(255) NOT NULL,
   `applied` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of django_migrations
@@ -245,6 +253,7 @@ INSERT INTO `django_migrations` VALUES ('14', 'auth', '0009_alter_user_last_name
 INSERT INTO `django_migrations` VALUES ('15', 'sessions', '0001_initial', '2018-07-18 07:28:26.813170');
 INSERT INTO `django_migrations` VALUES ('16', 'LibrarySys', '0002_auto_20180718_1643', '2018-07-18 08:43:48.715836');
 INSERT INTO `django_migrations` VALUES ('17', 'LibrarySys', '0003_auto_20180718_1908', '2018-07-18 11:08:50.502182');
+INSERT INTO `django_migrations` VALUES ('18', 'LibrarySys', '0004_auto_20180722_0015', '2018-07-21 16:15:14.737727');
 
 -- ----------------------------
 -- Table structure for django_session
@@ -292,6 +301,52 @@ INSERT INTO `librarysys_book_list` VALUES ('2', '9787111400851', '数据库系�
 INSERT INTO `librarysys_book_list` VALUES ('3', '9787040108231', '托马斯微积分 第十版', 'Finney; Weir; Giordano', '叶其孝 王耀东 唐兢', '高等教育出版社', '88', '0', '0', '1', null, null);
 
 -- ----------------------------
+-- Table structure for librarysys_book_short_comment
+-- ----------------------------
+DROP TABLE IF EXISTS `librarysys_book_short_comment`;
+CREATE TABLE `librarysys_book_short_comment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `comment_text` longtext NOT NULL,
+  `comment_time` datetime(6) NOT NULL,
+  `like_num` int(11) NOT NULL,
+  `unlike_num` int(11) NOT NULL,
+  `collect_num` int(11) NOT NULL,
+  `book_id` int(11) NOT NULL,
+  `commentator_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `LibrarySys_book_shor_book_id_b7dbaf2f_fk_LibrarySy` (`book_id`),
+  KEY `LibrarySys_book_shor_commentator_id_3aec72db_fk_LibrarySy` (`commentator_id`),
+  CONSTRAINT `LibrarySys_book_shor_book_id_b7dbaf2f_fk_LibrarySy` FOREIGN KEY (`book_id`) REFERENCES `librarysys_book_list` (`id`),
+  CONSTRAINT `LibrarySys_book_shor_commentator_id_3aec72db_fk_LibrarySy` FOREIGN KEY (`commentator_id`) REFERENCES `librarysys_user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Records of librarysys_book_short_comment
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for librarysys_book_short_comment_like_and_collection_record
+-- ----------------------------
+DROP TABLE IF EXISTS `librarysys_book_short_comment_like_and_collection_record`;
+CREATE TABLE `librarysys_book_short_comment_like_and_collection_record` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `like_state` tinyint(1) NOT NULL,
+  `unlike_state` tinyint(1) NOT NULL,
+  `collection_state` tinyint(1) NOT NULL,
+  `comment_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `LibrarySys_book_shor_comment_id_320ba44e_fk_LibrarySy` (`comment_id`),
+  KEY `LibrarySys_book_shor_user_id_4c014308_fk_LibrarySy` (`user_id`),
+  CONSTRAINT `LibrarySys_book_shor_comment_id_320ba44e_fk_LibrarySy` FOREIGN KEY (`comment_id`) REFERENCES `librarysys_book_short_comment` (`id`),
+  CONSTRAINT `LibrarySys_book_shor_user_id_4c014308_fk_LibrarySy` FOREIGN KEY (`user_id`) REFERENCES `librarysys_user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Records of librarysys_book_short_comment_like_and_collection_record
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for librarysys_borrow
 -- ----------------------------
 DROP TABLE IF EXISTS `librarysys_borrow`;
@@ -311,7 +366,7 @@ CREATE TABLE `librarysys_borrow` (
 -- Records of librarysys_borrow
 -- ----------------------------
 INSERT INTO `librarysys_borrow` VALUES ('1', '2018-10-01 19:26:26.000000', '1', '1');
-INSERT INTO `librarysys_borrow` VALUES ('2', '2018-10-01 19:28:38.000000', '2', '3');
+INSERT INTO `librarysys_borrow` VALUES ('2', '2018-10-01 19:28:38.000000', '2', '1');
 
 -- ----------------------------
 -- Table structure for librarysys_login_record
@@ -324,11 +379,31 @@ CREATE TABLE `librarysys_login_record` (
   PRIMARY KEY (`id`),
   KEY `LibrarySys_login_record_user_id_417b8f0a_fk_LibrarySys_user_id` (`user_id`),
   CONSTRAINT `LibrarySys_login_record_user_id_417b8f0a_fk_LibrarySys_user_id` FOREIGN KEY (`user_id`) REFERENCES `librarysys_user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of librarysys_login_record
 -- ----------------------------
+INSERT INTO `librarysys_login_record` VALUES ('5', '2018-07-20 11:39:44.239729', '3');
+INSERT INTO `librarysys_login_record` VALUES ('6', '2018-07-20 11:41:04.287522', '2');
+INSERT INTO `librarysys_login_record` VALUES ('7', '2018-07-20 11:46:12.393008', '2');
+INSERT INTO `librarysys_login_record` VALUES ('8', '2018-07-20 12:37:42.643831', '2');
+INSERT INTO `librarysys_login_record` VALUES ('9', '2018-07-20 12:39:18.958128', '5');
+INSERT INTO `librarysys_login_record` VALUES ('10', '2018-07-20 12:51:41.785416', '2');
+INSERT INTO `librarysys_login_record` VALUES ('11', '2018-07-20 12:52:58.836708', '6');
+INSERT INTO `librarysys_login_record` VALUES ('12', '2018-07-20 12:54:19.049690', '2');
+INSERT INTO `librarysys_login_record` VALUES ('13', '2018-07-20 12:54:51.907399', '2');
+INSERT INTO `librarysys_login_record` VALUES ('14', '2018-07-20 12:59:43.888759', '2');
+INSERT INTO `librarysys_login_record` VALUES ('15', '2018-07-20 13:00:29.423008', '2');
+INSERT INTO `librarysys_login_record` VALUES ('16', '2018-07-20 13:03:45.486958', '2');
+INSERT INTO `librarysys_login_record` VALUES ('17', '2018-07-20 13:04:23.458031', '2');
+INSERT INTO `librarysys_login_record` VALUES ('18', '2018-07-20 13:05:54.955644', '2');
+INSERT INTO `librarysys_login_record` VALUES ('19', '2018-07-20 13:07:50.777230', '7');
+INSERT INTO `librarysys_login_record` VALUES ('20', '2018-07-20 14:15:24.427486', '2');
+INSERT INTO `librarysys_login_record` VALUES ('21', '2018-07-21 07:47:54.386804', '2');
+INSERT INTO `librarysys_login_record` VALUES ('22', '2018-07-21 07:48:03.259021', '2');
+INSERT INTO `librarysys_login_record` VALUES ('23', '2018-07-21 07:49:06.505292', '2');
+INSERT INTO `librarysys_login_record` VALUES ('24', '2018-07-21 15:24:38.972626', '2');
 
 -- ----------------------------
 -- Table structure for librarysys_request
@@ -372,7 +447,7 @@ CREATE TABLE `librarysys_user` (
   `last_time` datetime(6) DEFAULT NULL,
   `cancellation` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of librarysys_user
@@ -381,14 +456,6 @@ INSERT INTO `librarysys_user` VALUES ('1', 'library', 'library', 'library', 'lib
 INSERT INTO `librarysys_user` VALUES ('2', '001', '001', 'python', 'biggrids@outlook.com', 'none', '0', '2018-07-18 18:57:06.000000', '2018-07-18 18:57:09.000000', '0');
 INSERT INTO `librarysys_user` VALUES ('3', '002', '002', 'python', '*', 'none', '0', '2018-07-18 19:20:51.000000', '2018-07-18 19:20:54.000000', '0');
 INSERT INTO `librarysys_user` VALUES ('4', '003', '003', 'python', '*', 'none', '0', '2018-07-18 19:21:25.000000', '2018-07-18 19:21:27.000000', '0');
-DROP TRIGGER IF EXISTS `last_time_update`;
-DELIMITER ;;
-CREATE TRIGGER `last_time_update` AFTER INSERT ON `librarysys_login_record` FOR EACH ROW begin
-
-update librarysys_user 
-set last_time = NOW()
-where stu_id = NEW.user_id;
-
-end
-;;
-DELIMITER ;
+INSERT INTO `librarysys_user` VALUES ('5', '004', '004', 'python', '*', 'none', '0', '2018-07-20 12:39:18.958128', '2018-07-20 12:39:18.958128', '0');
+INSERT INTO `librarysys_user` VALUES ('6', '005', '005', 'python', '*', 'none', '0', '2018-07-20 12:52:58.836708', '2018-07-20 12:52:58.836708', '0');
+INSERT INTO `librarysys_user` VALUES ('7', '006', '006', 'python', '*', 'none', '0', '2018-07-20 13:07:50.777230', '2018-07-20 13:07:50.777230', '0');

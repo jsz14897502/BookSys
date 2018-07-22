@@ -16,17 +16,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from LibrarySys import views
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("library/", include("LibrarySys.urls")),
-    path('', views.login, name="login"),
-    path('login/', views.login, name="login"),
-    path('login_check/', views.login_check, name="login_check"),
-    path('register/', views.register, name="register"),
-    path('register_check/', views.register_check, name="register_check"),
-    path('index/', views.index, name="index"),
-    path('test/', views.test, name="test"),
+    path("book/", include("LibrarySys.urls")),
+    path("", views.DomainView.as_view(), name="domain"),
+    path("login/", views.LoginView.as_view(), name="login"),
+    path("login_check/", views.LoginView.as_view(), name="login_check"),
+    path("register/", views.RegisterView.as_view(), name="register"),
+    path("register_check/", views.RegisterView.as_view(), name="register_check"),
+    path("about/", TemplateView.as_view(template_name="about.html")),
+    path("test/", views.test, name="test"),
 
 ]
 
