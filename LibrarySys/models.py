@@ -14,6 +14,7 @@ class Book_list(models.Model):
     borrowed_times = models.IntegerField(default=0, null=False) # 书籍被借次数
     state_code = models.IntegerField(default=0, null=False) # 书籍状态码
     profiles = models.CharField(max_length=300, null=True) # 书籍简介
+    # book_score = models.FloatField(default=0, null=False)
     book_image = models.ImageField(upload_to="%Y/%m/%d/", null=True) # 书籍图片
 
 
@@ -33,6 +34,7 @@ class Login_record(models.Model):
 
 
 class Request(models.Model):
+    """请求信息记录表"""
     id = models.AutoField(primary_key=True) # 这条记录的 id，也就是这条借阅请求的 id
     book_name = models.ForeignKey("Book_list", on_delete=models.DO_NOTHING) # 请求借阅的书的 id
     cretime = models.DateTimeField(null=False) # 请求创建时间
