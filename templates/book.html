@@ -13,6 +13,19 @@
             background: #eee
             url(http://subtlepatterns.com/patterns/sativa.png);
         }
+        .one{
+            width: 300px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .two{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp:2;
+        }
     </style>
 </head>
 <body>
@@ -60,14 +73,14 @@
                 <div class="col-md-6">
                     <div class="card flex-md-row mb-4 box-shadow h-md-260">
                         <div class="card-body d-flex flex-column align-items-start">
-                            <h3 class="mb-0">
+                            <h3 class="mb-0 one">
                                 <a class="text-dark" href="#">{{ book.book_name }}</a>
                             </h3>
-                            <div class="mb-1 text-muted">作者 ：{{ book.author }}</div>
-                            <div class="mb-1 text-muted">译者 ：{{ book.translator }}</div>
+                            <div class="mb-1 text-muted one">作者 ：{{ book.author }}</div>
+                            <div class="mb-1 text-muted one">译者 ：{{ book.translator }}</div>
                             <div class="mb-1 text-muted">ISBN : {{ book.isbn }}</div>
                             <div class="mb-1 text-muted">出版社：{{ book.press }}</div>
-                            <p class="card-text mb-auto">简介：{{ book.profile }} <br><br></p>
+                            <p class="card-text mb-auto two">简介：{{ book.profile }} <br><br></p>
                             <button type="button" class="btn btn-outline-primary">详情</button>
                         </div>
                         <img class="card-img-right flex-auto d-none d-md-block"  alt="书籍" style="width: 200px; height: 275px;" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1532063370240&di=333b4dd24e984d3e403fdd8668f120f8&imgtype=0&src=http%3A%2F%2Fimg37.ddimg.cn%2F35%2F1%2F1248303707-3_w_2.jpg">
