@@ -4,6 +4,17 @@ from django.views.generic import View
 from django.utils.timezone import now
 from .models import User, Login_record, Book_list
 from django.views.generic import ListView
+from django.utils.decorators import method_decorator
+
+
+def login_required(func):
+    def wrapper(request, *args, **kwargs):
+        cookie = request.COOKIES
+        if cookie["stu_id"] is not None:
+            return wrapper(request, *args, **kwargs)
+        else:
+            return redirect(to=reverse("login"), permanent=False)
+    return wrapper()
 
 
 class DomainView(View):
@@ -75,6 +86,7 @@ class RegisterView(View):
             return JsonResponse({'msg': "4400"})
 
 
+@ method_decorator([login_required], name='dispatch')
 class BookListView(ListView):
     """用来渲染book.html里的数据的列表视图类"""
     model = Book_list
@@ -132,33 +144,5 @@ def test(request):
     # login_time_record.save()
     return HttpResponse("emmmmm... 你竟然无聊到了试这个....你注销账户吧...........")
 
-# 这是原版的首页视图函数，但是已经弃用了
-# class IndexView(View):
-#     def get(self, request, *args, **kwargs):
-#         cookie = request.COOKIES
-#         if len(cookie) is 0:
-#             return redirect(to=reverse("login"), permanent=False)
-#         else:
-#             context = {}
-#             book_num = Book_list.objects.all().count()
-#             context["book_num"] = book_num
-#             context["books"] = []
-#
-#             page_num = int(request.GET.get("page_num", default=1))
-#             book_id_num = [(page_num * 8 - 7), (page_num * 8 - 6), (page_num * 8 - 5), (page_num * 8 - 4),
-#                            (page_num * 8 - 3), (page_num * 8 - 2), (page_num * 8 - 1), (page_num * 8)]
-#             books = Book_list.objects.filter(id__in=book_id_num)
-#             for book in books:
-#                 book_detail = {}
-#                 book_detail["book_name"] = book.book_name
-#                 book_detail["author"] = book.author
-#                 book_detail["translator"] = book.translator
-#                 book_detail["isbn"] = book.isbn
-#                 book_detail["press"] = book.press
-#                 book_detail["profiles"] = book.profiles
-#                 context["books"].append(book_detail)
-#             return render(request, 'index.html', context=context)
-#
-#     def http_method_not_allowed(self, request, *args, **kwargs):
-#         return HttpResponse("不支持除 get 之外的其他请求")
+
 
