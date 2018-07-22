@@ -76,3 +76,4 @@ class Book_short_comment_like_and_collection_record(models.Model):
     unlike_state = models.BooleanField(default=0, null=False) # 该用户是否不喜欢这条简评
     collection_state = models.BooleanField(default=0, null=False) # 该用户是否收藏了这条简评
 
+
