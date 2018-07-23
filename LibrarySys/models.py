@@ -14,7 +14,7 @@ class Book_list(models.Model):
     borrowed_times = models.IntegerField(default=0, null=False) # 书籍被借次数
     state_code = models.IntegerField(default=0, null=False) # 书籍状态码
     profiles = models.CharField(max_length=300, null=True) # 书籍简介
-    # book_score = models.FloatField(default=0, null=False)
+    # book_score = models.FloatField(default=0, null=False) # 待开发的书籍平均评分功能，预留位
     book_image = models.ImageField(upload_to="%Y/%m/%d/", null=True) # 书籍图片
 
 
@@ -77,5 +77,21 @@ class Book_short_comment_like_and_collection_record(models.Model):
     like_state = models.BooleanField(default=0, null=False) # 该用户是否喜欢这条简评
     unlike_state = models.BooleanField(default=0, null=False) # 该用户是否不喜欢这条简评
     collection_state = models.BooleanField(default=0, null=False) # 该用户是否收藏了这条简评
+
+
+# class Book_Score(models.Model):
+#     """书籍评分记录总表"""
+#     id = models.AutoField(primary_key=True) # 这条记录的 id，也是每条点赞收藏的 id
+#     raters = models.ForeignKey("User", on_delete=models.DO_NOTHING) # 记录归属的用户 id
+#     book = models.ForeignKey("Book_list", on_delete=models.DO_NOTHING) # 书籍 id
+#     score = models.IntegerField(null=False) # 书籍评分
+#     cretime = models.DateTimeField(null=False) # 评分日期
+
+
+
+
+
+
+
 
 
