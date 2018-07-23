@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse, JsonResponse
 from django.views.generic import View
 from django.utils.timezone import now
-from . import models
 from django.views.generic import ListView
 from django.utils.decorators import method_decorator
+from . import models
+import datetime
 
 
 def login_required(func):
@@ -88,7 +89,7 @@ class RegisterView(View):
 
 @ method_decorator([login_required], name='dispatch')
 class BookListView(ListView):
-    """用来渲染book.html里的数据的列表视图类"""
+    """书籍总页的视图类"""
     model = models.Book_list
     template_name = 'book.html'
     paginate_by = 8
@@ -135,6 +136,7 @@ class BookListView(ListView):
 
 @ method_decorator([login_required], name='dispatch')
 class BookDetailView(View):
+    """书籍详情页的视图类"""
     def get(self, request, book_id):
         book = models.Book_list.objects.get(id__exact=book_id)
         owner = models.User.objects.get(id__exact=book.owner.id)
@@ -147,6 +149,7 @@ class BookDetailView(View):
             comments.append(message)
             # print(comment.comment_text)
         context = {
+            "book_id": book.id,
             "book_name": book.book_name,
             "isbn": book.isbn,
             "author": book.author,
@@ -163,7 +166,65 @@ class BookDetailView(View):
         return render(request, "LibrarySys/detail.html", context=context)
 
     def post(self, request):
-        pass
+        # 从前端的 ajax 中获取注册所需数据
+        state_code = request.POST.get('state_code')
+        # 状态码判断
+        if state_code is 5598:
+            # 操作可行性判断
+            if self.comment_request(request):
+                return JsonResponse({'msg': '2299'})
+            else:
+                return JsonResponse({'msg': '4498'})
+        elif state_code is 5597:
+            if self.submit_comment(request):
+                return JsonResponse({'msg': '2200'})
+            else:
+                return JsonResponse({'msg': '5599'})
+        elif state_code is 5599:
+            if self.borrow_request(request):
+                return JsonResponse({'msg': '2200'})
+            else:
+                return JsonResponse({'msg': '5599'})
+
+    def comment_request(self, request):
+        book_id = request.POST.get("book_id")
+        book_obj = models.Book_list.objects.get(id__exact=book_id)
+        comments_li = models.Book_short_comment.objects.filter(book=book_obj)
+        comment_num_today = 0
+        now_time = now()
+        for comment in comments_li:
+            if comment.comment_time.date() is now_time.date():
+                comment_num_today += comment_num_today
+        if comment_num_today > 2:
+            return 0
+        else:
+            return 1
+
+    def submit_comment(self, request):
+        book_id = request.POST.get("book_id")
+        stu_id = request.COOKIES.get("stu_id")
+        comment_text = request.POST.get("comment_text")
+        book_obj = models.Book_list.objects.get(id__exact=book_id)
+        commentator = models.User.objects.get(id__exact=stu_id)
+        new_comment = models.Book_short_comment(book=book_obj, user=commentator,
+                                                comment_text=comment_text, comment_time=now())
+        if new_comment.save():
+            return 1
+        else:
+            return 0
+
+    def borrow_request(self, request):
+        book_id = request.POST.get("book_id")
+        stu_id = request.COOKIES.get("stu_id")
+        book_obj = models.Book_list.objects.get(id__exact=book_id)
+        requester_obj = models.User.objects.get(stu_id=stu_id)
+        expiry_time = now() + datetime.timedelta(days=2)
+        request_record = models.Request(book_name=book_obj, cretime=now(),
+                                        requster=requester_obj, expiry_time=expiry_time)
+        if request_record.save():
+            return 1
+        else:
+            return 0
 
 
 def test(request):
@@ -175,7 +236,26 @@ def test(request):
     # login_time_record = Login_record(user=find_user[0], login_time=login_time)
     # print(login_time)
     # login_time_record.save()
+
+    # book_id = request.POST.get("book_id")
+    book_id = 1
+    book_obj = models.Book_list.objects.get(id__exact=book_id)
+    comments_li = models.Book_short_comment.objects.filter(book=book_obj)
+    comment_num_today = 0
+    now_time = now()
+    for comment in comments_li:
+        if comment.comment_time.date() is now_time.date():
+            comment_num_today += comment_num_today
+    if comment_num_today > 2:
+        print("can't")
+    else:
+        print("you can")
+
     return HttpResponse("emmmmm... 你竟然无聊到了试这个....你注销账户吧...........")
+
+
+
+
 
 
 
