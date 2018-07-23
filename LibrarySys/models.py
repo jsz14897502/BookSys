@@ -38,7 +38,7 @@ class Request(models.Model):
     id = models.AutoField(primary_key=True) # 这条记录的 id，也就是这条借阅请求的 id
     book_name = models.ForeignKey("Book_list", on_delete=models.DO_NOTHING) # 请求借阅的书的 id
     cretime = models.DateTimeField(null=False) # 请求创建时间
-    requster = models.ForeignKey("User", on_delete=models.DO_NOTHING) # 请求者
+    requester = models.ForeignKey("User", on_delete=models.DO_NOTHING) # 请求者
     confirm_code = models.SmallIntegerField(default=0, null=False) # 请求状态码
     expiry_time = models.DateTimeField(null=False) # 请求失效时间
 

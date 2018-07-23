@@ -11,7 +11,7 @@ import datetime
 def login_required(func):
     def wrapper(request, *args, **kwargs):
         cookie = request.COOKIES
-        if cookie["stu_id"] is not None:
+        if "stu_id" in cookie.keys():
             return func(request, *args, **kwargs)
         else:
             return redirect(to=reverse("login"), permanent=False)
@@ -39,7 +39,7 @@ class LoginView(View):
         password = request.POST.get('password')
         # 2,用户名和密码校验以及记录登录时间
         find_user = models.User.objects.filter(stu_id=stu_id, password=password)
-        if len(find_user) is 1:
+        if len(find_user) == 1:
             # 先创建 response
             response = JsonResponse({'msg': '2200'})
             response.set_cookie(key='stu_id', value=stu_id, max_age=(4 * 60 * 60))
@@ -165,36 +165,37 @@ class BookDetailView(View):
         }
         return render(request, "LibrarySys/detail.html", context=context)
 
-    def post(self, request):
+    def post(self, request, book_id):
         # 从前端的 ajax 中获取注册所需数据
         state_code = request.POST.get('state_code')
         # 状态码判断
-        if state_code is 5598:
+        if state_code == "6698":
             # 操作可行性判断
             if self.comment_request(request):
                 return JsonResponse({'msg': '2299'})
             else:
                 return JsonResponse({'msg': '4498'})
-        elif state_code is 5597:
+        elif state_code == "6697":
             if self.submit_comment(request):
                 return JsonResponse({'msg': '2200'})
             else:
                 return JsonResponse({'msg': '5599'})
-        elif state_code is 5599:
+        elif state_code == "6699":
             if self.borrow_request(request):
                 return JsonResponse({'msg': '2200'})
-            else:
-                return JsonResponse({'msg': '5599'})
+        else:
+            return JsonResponse({'msg': '5599'})
 
     def comment_request(self, request):
+
         book_id = request.POST.get("book_id")
         book_obj = models.Book_list.objects.get(id__exact=book_id)
         comments_li = models.Book_short_comment.objects.filter(book=book_obj)
         comment_num_today = 0
         now_time = now()
         for comment in comments_li:
-            if comment.comment_time.date() is now_time.date():
-                comment_num_today += comment_num_today
+            if comment.comment_time.date() == now_time.date():
+                comment_num_today = comment_num_today + 1
         if comment_num_today > 2:
             return 0
         else:
@@ -206,11 +207,12 @@ class BookDetailView(View):
         comment_text = request.POST.get("comment_text")
         book_obj = models.Book_list.objects.get(id__exact=book_id)
         commentator = models.User.objects.get(id__exact=stu_id)
-        new_comment = models.Book_short_comment(book=book_obj, user=commentator,
+        new_comment = models.Book_short_comment(book=book_obj, commentator=commentator,
                                                 comment_text=comment_text, comment_time=now())
-        if new_comment.save():
+        try:
+            new_comment.save()
             return 1
-        else:
+        except:
             return 0
 
     def borrow_request(self, request):
@@ -220,11 +222,147 @@ class BookDetailView(View):
         requester_obj = models.User.objects.get(stu_id=stu_id)
         expiry_time = now() + datetime.timedelta(days=2)
         request_record = models.Request(book_name=book_obj, cretime=now(),
-                                        requster=requester_obj, expiry_time=expiry_time)
-        if request_record.save():
+                                        requester=requester_obj, expiry_time=expiry_time)
+        try:
+            request_record.save()
             return 1
-        else:
+        except:
             return 0
+
+
+@ method_decorator([login_required], name='dispatch')
+class HomePageView(View):
+    def get(self, request):
+        context = {}
+        stu_id = request.COOKIES["stu_id"]
+        # 这是目前借阅到的书的部分的数据
+        context.update(self.borrowed_books(request, stu_id))
+        # 这是发出的请求的部分的数据
+        context.update(self.my_requests(request, stu_id))
+        # 这是收到的请求的部分的数据
+        context.update(self.received_requests(request, stu_id))
+        return render(request, "homepage.html", context=context)
+
+    def post(self, request):
+        pass
+
+    def borrowed_books(self, request, stu_id):
+        user_obj = models.User.objects.filter(stu_id=stu_id)
+        book_obj_li = models.Book_list.objects.filter(owner=user_obj[0])
+        borrows = []
+        message_id = 1
+        for book in book_obj_li:
+            if book.state_code == 1:
+                state = "逾期"
+            elif book.state_code == 0:
+                state = "正常"
+            else:
+                state = "error"
+            borrow_obj_li = models.Borrow.objects.filter(book_name=book)
+            borrow_obj_li_len = len(borrow_obj_li)
+            borrow_obj = borrow_obj_li[(borrow_obj_li_len - 1)]
+            return_time_tuple = borrow_obj.end_time.timetuple()
+            return_time = "{}/{}/{}".format(return_time_tuple.tm_year,
+                                            return_time_tuple.tm_mon, return_time_tuple.tm_mday)
+            borrow_detail = {}
+            borrow_detail["message_id"] = message_id
+            borrow_detail["book_name"] = book.book_name
+            borrow_detail["return_time"] = return_time
+            borrow_detail["book_status"] = state
+            borrows.append(borrow_detail)
+            message_id += 1
+        context = {
+            "borrows": borrows,
+        }
+        return context
+
+    def my_requests(self, request, stu_id):
+        user_obj = models.User.objects.get(stu_id=stu_id)
+        worked_req_li = []
+        unworked_req_li = []
+        worked_requests_obj_li = models.Request.objects.filter(requester=user_obj, confirm_code__exact=0)
+        for worked_req in worked_requests_obj_li:
+            expiry_time = self.awaretime_to_date(worked_req.expiry_time)
+            cre_time = self.awaretime_to_date(worked_req.cretime)
+            wk_re = {}
+            wk_re["book_name"] = worked_req.book_name.book_name
+            wk_re["owner"] = worked_req.book_name.owner.user_name
+            wk_re["cretime"] = cre_time
+            wk_re["contact"] = worked_req.book_name.owner.phone
+            wk_re["expiry_time"] = expiry_time
+            wk_re["state"] = "待审核"
+            worked_req_li.append(wk_re)
+
+        unworked_requests_obj_li = models.Request.objects.filter(requester=user_obj, confirm_code__in=[2, 3])
+        for unworked_req in unworked_requests_obj_li:
+            expiry_time = self.awaretime_to_date(unworked_req.expiry_time)
+            cre_time = self.awaretime_to_date(unworked_req.cretime)
+            wk_re = {}
+            wk_re["book_name"] = worked_req.book_name.book_name
+            wk_re["owner"] = worked_req.book_name.owner.user_name
+            wk_re["cretime"] = cre_time
+            wk_re["contact"] = worked_req.book_name.owner.phone
+            wk_re["expiry_time"] = expiry_time
+            if unworked_req.confirm_code == 2:
+                wk_re["state"] = "拒绝外借"
+            else:
+                wk_re["state"] = "请求超时"
+            unworked_req_li.append(wk_re)
+        context = {
+            "worked_req": worked_req_li,
+            "unworked_req": unworked_req_li,
+        }
+        return context
+
+    def received_requests(self, request, stu_id):
+        user_obj = models.User.objects.get(stu_id=stu_id)
+        book_obj_li = models.Book_list.objects.filter(owner=user_obj)
+        rec_worked_req_li = []
+        rec_unworked_req_li = []
+        context_mid_li = []
+        req_num = 1
+        for book in book_obj_li:
+            worked_request_li = models.Request.objects.filter(book_name=book, confirm_code__exact=0)
+            for worked_req in worked_request_li:
+                expiry_time = self.awaretime_to_date(worked_req.expiry_time)
+                cre_time = self.awaretime_to_date(worked_req.cretime)
+                wk_re = {}
+                wk_re["message_num"] = req_num
+                wk_re["requester"] = worked_req.requester.user_name
+                wk_re["contact"] = worked_req.requester.phone
+                wk_re["cretime"] = cre_time
+                wk_re["expiry_time"] = expiry_time
+                rec_worked_req_li.append(wk_re)
+                req_num += 1
+            unworked_request_li = models.Request.objects.filter(book_name=book, confirm_code__in=[2, 3])
+            for unworked_req in unworked_request_li:
+                expiry_time = self.awaretime_to_date(unworked_req.expiry_time)
+                cre_time = self.awaretime_to_date(unworked_req.cretime)
+                unwk_re = {}
+                unwk_re["requester"] = worked_req.requester.user_name
+                unwk_re["contact"] = worked_req.requester.phone
+                unwk_re["cretime"] = cre_time
+                unwk_re["expiry_time"] = expiry_time
+                if unworked_req.confirm_code == 2:
+                    unwk_re["reason"] = "拒绝外借"
+                else:
+                    unwk_re["reason"] = "请求超时"
+                rec_unworked_req_li.append(unwk_re)
+            context_mid = {
+                "book_name": book.book_name,
+                "rec_worked_req": rec_worked_req_li,
+                "rec_unworked_req": rec_unworked_req_li,
+            }
+            context_mid_li.append(context_mid)
+        context = {
+            "rec_reqs": context_mid_li,
+        }
+        return context
+
+    def awaretime_to_date(self, awaretime):
+        time_tuple = awaretime.timetuple()
+        time = "{}/{}/{}".format(time_tuple.tm_year, time_tuple.tm_mon, time_tuple.tm_mday)
+        return time
 
 
 def test(request):
@@ -244,7 +382,8 @@ def test(request):
     comment_num_today = 0
     now_time = now()
     for comment in comments_li:
-        if comment.comment_time.date() is now_time.date():
+        print(comment)
+        if comment.comment_time.date() == now_time.date():
             comment_num_today += comment_num_today
     if comment_num_today > 2:
         print("can't")
