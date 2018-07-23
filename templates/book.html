@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{% static 'LibrarySys/css/vendor/bootstrap.min.css' %}">
-    <title>book</title>
+    <title>BookSys</title>
     <style>
         body {
             margin-top: 50px;
@@ -81,7 +81,7 @@
                             <div class="mb-1 text-muted">ISBN : {{ book.isbn }}</div>
                             <div class="mb-1 text-muted">出版社：{{ book.press }}</div>
                             <p class="card-text mb-auto two">简介：{{ book.profile }} <br><br></p>
-                            <button type="button" class="btn btn-outline-primary"><a class="text-dark" href="{% url 'LibrarySys:book_detail' book_id=book.id %}">详情</a></button>
+                            <a class="text-dark" href="{% url 'LibrarySys:book_detail' book_id=book.id %}"><button type="button" class="btn btn-outline-primary">详情</button></a>
                         </div>
                         <img class="card-img-right flex-auto d-none d-md-block"  alt="书籍" style="width: 200px; height: 275px;" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1532063370240&di=333b4dd24e984d3e403fdd8668f120f8&imgtype=0&src=http%3A%2F%2Fimg37.ddimg.cn%2F35%2F1%2F1248303707-3_w_2.jpg">
                     </div>
