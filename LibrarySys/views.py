@@ -39,7 +39,7 @@ class LoginView(View):
         password = request.POST.get('password')
         # 2,用户名和密码校验以及记录登录时间
         find_user = models.User.objects.filter(stu_id=stu_id, password=password)
-        if len(find_user) is 1:
+        if len(find_user) == 1:
             # 先创建 response
             response = JsonResponse({'msg': '2200'})
             response.set_cookie(key='stu_id', value=stu_id, max_age=(4 * 60 * 60))
@@ -165,36 +165,37 @@ class BookDetailView(View):
         }
         return render(request, "LibrarySys/detail.html", context=context)
 
-    def post(self, request):
+    def post(self, request, book_id):
         # 从前端的 ajax 中获取注册所需数据
         state_code = request.POST.get('state_code')
         # 状态码判断
-        if state_code is 5598:
+        if state_code == "6698":
             # 操作可行性判断
             if self.comment_request(request):
                 return JsonResponse({'msg': '2299'})
             else:
                 return JsonResponse({'msg': '4498'})
-        elif state_code is 5597:
+        elif state_code == "6697":
             if self.submit_comment(request):
                 return JsonResponse({'msg': '2200'})
             else:
                 return JsonResponse({'msg': '5599'})
-        elif state_code is 5599:
+        elif state_code == "6699":
             if self.borrow_request(request):
                 return JsonResponse({'msg': '2200'})
-            else:
-                return JsonResponse({'msg': '5599'})
+        else:
+            return JsonResponse({'msg': '5599'})
 
     def comment_request(self, request):
+
         book_id = request.POST.get("book_id")
         book_obj = models.Book_list.objects.get(id__exact=book_id)
         comments_li = models.Book_short_comment.objects.filter(book=book_obj)
         comment_num_today = 0
         now_time = now()
         for comment in comments_li:
-            if comment.comment_time.date() is now_time.date():
-                comment_num_today += comment_num_today
+            if comment.comment_time.date() == now_time.date():
+                comment_num_today = comment_num_today + 1
         if comment_num_today > 2:
             return 0
         else:
@@ -206,11 +207,12 @@ class BookDetailView(View):
         comment_text = request.POST.get("comment_text")
         book_obj = models.Book_list.objects.get(id__exact=book_id)
         commentator = models.User.objects.get(id__exact=stu_id)
-        new_comment = models.Book_short_comment(book=book_obj, user=commentator,
+        new_comment = models.Book_short_comment(book=book_obj, commentator=commentator,
                                                 comment_text=comment_text, comment_time=now())
-        if new_comment.save():
+        try:
+            new_comment.save()
             return 1
-        else:
+        except:
             return 0
 
     def borrow_request(self, request):
@@ -221,9 +223,10 @@ class BookDetailView(View):
         expiry_time = now() + datetime.timedelta(days=2)
         request_record = models.Request(book_name=book_obj, cretime=now(),
                                         requester=requester_obj, expiry_time=expiry_time)
-        if request_record.save():
+        try:
+            request_record.save()
             return 1
-        else:
+        except:
             return 0
 
 
@@ -238,7 +241,6 @@ class HomePageView(View):
         context.update(self.my_requests(request, stu_id))
         # 这是收到的请求的部分的数据
         context.update(self.received_requests(request, stu_id))
-        print(context)
         return render(request, "homepage.html", context=context)
 
     def post(self, request):
@@ -250,9 +252,9 @@ class HomePageView(View):
         borrows = []
         message_id = 1
         for book in book_obj_li:
-            if book.state_code is 1:
+            if book.state_code == 1:
                 state = "逾期"
-            elif book.state_code is 0:
+            elif book.state_code == 0:
                 state = "正常"
             else:
                 state = "error"
@@ -301,7 +303,7 @@ class HomePageView(View):
             wk_re["cretime"] = cre_time
             wk_re["contact"] = worked_req.book_name.owner.phone
             wk_re["expiry_time"] = expiry_time
-            if unworked_req.confirm_code is 2:
+            if unworked_req.confirm_code == 2:
                 wk_re["state"] = "拒绝外借"
             else:
                 wk_re["state"] = "请求超时"
@@ -317,7 +319,6 @@ class HomePageView(View):
         book_obj_li = models.Book_list.objects.filter(owner=user_obj)
         rec_worked_req_li = []
         rec_unworked_req_li = []
-        context_mid = {}
         context_mid_li = []
         req_num = 1
         for book in book_obj_li:
@@ -342,7 +343,7 @@ class HomePageView(View):
                 unwk_re["contact"] = worked_req.requester.phone
                 unwk_re["cretime"] = cre_time
                 unwk_re["expiry_time"] = expiry_time
-                if unworked_req.confirm_code is 2:
+                if unworked_req.confirm_code == 2:
                     unwk_re["reason"] = "拒绝外借"
                 else:
                     unwk_re["reason"] = "请求超时"
@@ -353,11 +354,9 @@ class HomePageView(View):
                 "rec_unworked_req": rec_unworked_req_li,
             }
             context_mid_li.append(context_mid)
-            print(context_mid)
         context = {
             "rec_reqs": context_mid_li,
         }
-        print(context)
         return context
 
     def awaretime_to_date(self, awaretime):
@@ -384,7 +383,7 @@ def test(request):
     now_time = now()
     for comment in comments_li:
         print(comment)
-        if comment.comment_time.date() is now_time.date():
+        if comment.comment_time.date() == now_time.date():
             comment_num_today += comment_num_today
     if comment_num_today > 2:
         print("can't")

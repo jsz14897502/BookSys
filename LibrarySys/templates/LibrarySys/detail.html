@@ -29,7 +29,7 @@
                         <a class="nav-link" href="{% url 'LibrarySys:book_page' %}">书籍</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'homepage' %}">个人中心</a>
+                        <a class="nav-link" href="{% url 'home_page' %}">个人中心</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -103,7 +103,7 @@
                     </tbody>
                 </table>
                 <p class="text-center text-warning">借阅前建议先联系当前持有者!</p>
-                <button class="btn btn-primary">借阅</button>
+                <button class="btn btn-primary" id="bor">借阅</button>
             </div>
 
         </div>
@@ -133,9 +133,9 @@
                 <div class="card-body">
                     <form>
                         <div class="form-group">
-                            <textarea class="form-control" rows="3"></textarea>
+                            <textarea class="form-control" rows="3" id="text"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" class="btn btn-primary" id="com">Submit</button>
                     </form>
                 </div>
             </div>
@@ -147,15 +147,126 @@
 </div>
 
 <script src="{% static 'LibrarySys/scripts/jquery.js' %}"></script>
-<script src="https://cdn.bootcss.com/popper.js/1.14.3/esm/popper.js"></script>
-<script src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="js/jquery.js"></script>
+<script src="https://cdn.bootcss.com/popper.js/1.12.5/umd/popper.min.js"></script>
+<script src="js/bootstrap.js"></script>
 <script>
 $(function () {
-    $("#comment").hide()
+    $("#comment").hide();
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        crossDomain: false, // obviates need for sameOrigin test
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type)) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    })
+
+
     $("#btu").click(function () {
         //添加ajax给后台判断能否评论
-
-        $("#comment").show();
+        $.ajax({
+            type : "post",
+            url : "{% url 'LibrarySys:book_detail' book_id=book_id %}",
+            data : {
+                book_id:'{{book_id}}',
+                state_code :'6698',
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success : function (data) {
+                if (data){
+                    if (data.msg=='2299'){
+                        $("#comment").show();
+                    }
+                    else if(data.msg=='4498'){
+                        alert("今日评论已达上限，请明日再来");
+                    }
+                }
+                else{
+                    alert("发生未知错误");
+                }
+            },
+            error : function () {
+                alert("请检查网络连接或联系管理人员")
+            }
+        })
+    });
+    $("#com").click(function () {
+        var comment= $("#text").val();
+        $.ajax({
+            type : "post",
+            url : "{% url 'LibrarySys:book_detail' book_id=book_id %}",
+            data : {
+                state_code :'6697',
+                book_id : '{{book_id}}',
+                comment_text : comment,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success : function (data) {
+                if (data){
+                    if (data.msg=='2200'){
+                        alert("发表成功");
+                        window.location.reload();
+                    }
+                    else if(data.msg=='5599'){
+                        alert("服务器异常，请联系工作人员");
+                    }
+                }
+                else{
+                    alert("发生未知错误");
+                }
+            },
+            error : function () {
+                alert("请检查网络连接或联系管理人员")
+            }
+        })
+    })
+    $("#bor").click(function () {
+        $.ajax({
+            type : "post",
+            url : "{% url 'LibrarySys:book_detail' book_id=book_id %}",
+            data : {
+                state_code :'6699',
+                book_id : '{{book_id}}',
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success : function (data) {
+                if (data){
+                    if (data.msg=='2200'){
+                        alert("申请已发送")
+                    }
+                    else if(data.msg=='5599'){
+                        alert("服务器异常，请联系工作人员");
+                    }
+                }
+                else{
+                    alert("发生未知错误");
+                }
+            },
+            error : function () {
+                alert("请检查网络连接或联系管理人员")
+            }
+        })
     })
 
 })
