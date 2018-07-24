@@ -83,7 +83,7 @@ class BookCommentJudge():
         stu_id = self.request.COOKIES.get("stu_id")
         comment_text = self.request.POST.get("comment_text")
         book_obj = models.Book_list.objects.get(id__exact=book_id)
-        commentator = models.User.objects.get(id__exact=stu_id)
+        commentator = models.User.objects.get(stu_id__exact=stu_id)
         new_comment = models.Book_short_comment(book=book_obj, commentator=commentator,
                                                 comment_text=comment_text, comment_time=now())
         try:
