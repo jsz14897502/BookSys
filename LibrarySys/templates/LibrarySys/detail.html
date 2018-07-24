@@ -255,8 +255,11 @@ $(function () {
                     if (data.msg=='2200'){
                         alert("申请已发送")
                     }
+                    if (data.msg=='5598'){
+                        alert("借阅失败")
+                    }
                     else if(data.msg=='5599'){
-                        alert("服务器异常，请联系工作人员");
+                        alert("服务异常，请联系工作人员");
                     }
                 }
                 else{

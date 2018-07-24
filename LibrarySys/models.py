@@ -52,6 +52,8 @@ class User(models.Model):
     email = models.CharField(max_length=30, null=False) # 用户邮箱
     phone = models.CharField(max_length=14, null=False) # 用户电话
     holds = models.IntegerField(default=0, null=True) # 用户目前借了几本书
+    active_violations = models.IntegerField(default=0, null=False)
+    violation_times = models.SmallIntegerField(default=0, null=False) # 用户总违规次数
     cretime = models.DateTimeField(null=False) # 账户建立时间
     last_time = models.DateTimeField(null=True) # 账户最后登录时间
     cancellation = models.BooleanField(default=0, null=False) # 账户是否已注销
@@ -77,6 +79,18 @@ class Book_short_comment_like_and_collection_record(models.Model):
     like_state = models.BooleanField(default=0, null=False) # 该用户是否喜欢这条简评
     unlike_state = models.BooleanField(default=0, null=False) # 该用户是否不喜欢这条简评
     collection_state = models.BooleanField(default=0, null=False) # 该用户是否收藏了这条简评
+
+
+class Violation_record(models.Model):
+    """用户违规记录表"""
+    id = models.AutoField(primary_key=True) # 这条记录的 id，也是每条违规记录的 id
+    user = models.ForeignKey("User", on_delete=models.DO_NOTHING) # 记录归属的用户 id
+    violation_type = models.SmallIntegerField(null=False) # 违规类型
+    cretime = models.DateTimeField(null=False) # 违规时间
+    treat_state = models.BooleanField(default=1, null=False) # 用户是否已处理该违规
+    treat_time = models.DateTimeField(null=True) # 违规处理时间
+
+
 
 
 # class Book_Score(models.Model):
