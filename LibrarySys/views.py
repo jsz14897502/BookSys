@@ -214,7 +214,14 @@ class HomePageView(View):
         return render(request, "homepage.html", context=context)
 
     def post(self, request):
-        pass
+        lend_judge = assistant.LendJudge(request)
+        if lend_judge.judge():
+            if lend_judge.lend_book():
+                return JsonResponse({"msg": "2299"}) # 执行正常
+            else:
+                return JsonResponse({"msg": "5500"}) # 数据库操作异常
+        else:
+            return JsonResponse({"msg": "4499"}) # 该用户借阅行为异常
 
 
 def test(request):
@@ -235,6 +242,8 @@ def test(request):
     # now_time = now()
     # for comment in comments_li:
     #     print(comment)
+    #     dd = comment.comment_time.date() > now_time.date()
+    #     print(dd)
     #     if comment.comment_time.date() == now_time.date():
     #         comment_num_today += comment_num_today
     # if comment_num_today > 2:
@@ -242,6 +251,12 @@ def test(request):
     # else:
     #     print("you can")
 
+    stu_id = "001"
+    book_name = "汇编语言 第三版"
+    user_obj = models.User.objects.get(stu_id=stu_id)
+    book_obj = models.Book_list.objects.get(book_name=book_name)
+    vio = models.Violation_record(user=user_obj, book_name=book_obj, violation_type=1, cretime=now())
+    # vio.save()
     return HttpResponse("你竟然无聊到试这个... emmmmm....你注销账户吧...........")
 
 
