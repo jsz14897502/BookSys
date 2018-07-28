@@ -214,14 +214,17 @@ class HomePageView(View):
         return render(request, "homepage.html", context=context)
 
     def post(self, request):
-        lend_judge = assistant.LendJudge(request)
-        if lend_judge.judge():
-            if lend_judge.lend_book():
-                return JsonResponse({"msg": "2299"}) # 执行正常
+        if request.POST["state_code"] == "6696":
+            lend_judge = assistant.LendJudge(request)
+            if lend_judge.judge():
+                if lend_judge.lend_book():
+                    return JsonResponse({"msg": "2299"}) # 执行正常
+                else:
+                    return JsonResponse({"msg": "5500"}) # 数据库操作异常
             else:
-                return JsonResponse({"msg": "5500"}) # 数据库操作异常
+                return JsonResponse({"msg": "4499"}) # 该用户借阅行为异常
         else:
-            return JsonResponse({"msg": "4499"}) # 该用户借阅行为异常
+            return JsonResponse({"msg": "5501"}) # 不支持其他请求
 
 
 def test(request):
