@@ -64,14 +64,17 @@ class LendJudge():
 
     def lend_book(self):
         stu_id = self.request.COOKIES["stu_id"]
-        book_tobe_borrowed = self.request.POST["book_name"]
+        bookname_tobe_borrowed = self.request.POST["book_name"]
+        requester_dataid = self.request.POST["user_data_id"]
+        requester_obj = models.User.objects.get(id__exact=requester_dataid)
         user_obj = models.User.objects.get(stu_id=stu_id)
-        book_obj = models.Book_list.objects.get(user=user_obj, book_name=book_tobe_borrowed)
+        book_obj = models.Book_list.objects.get(owner=user_obj, book_name=bookname_tobe_borrowed)
         end_time = now() + datetime.timedelta(days=10)
         borrow_record = models.Borrow(book_name=book_obj, end_time=end_time, previous=user_obj)
         refuse_part = LinkagePart(self.request)
         try:
             borrow_record.save()
+            book_obj.owner = requester_obj
             refuse_part.refuse_other_request_while_lend()
             return True
         except:
@@ -212,6 +215,7 @@ class RequestAndBorrowInfo():
                 wk_re["contact"] = worked_req.requester.phone
                 wk_re["cretime"] = cre_time
                 wk_re["expiry_time"] = expiry_time
+                wk_re["user_data_id"] = worked_req.requester.id
                 rec_worked_req_li.append(wk_re)
                 req_num += 1
             unworked_request_li = models.Request.objects.filter(book_name=book, confirm_code__in=[2, 3])
