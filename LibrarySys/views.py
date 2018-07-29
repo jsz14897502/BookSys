@@ -228,6 +228,32 @@ class HomePageView(View):
             return JsonResponse({"msg": "5501"}) # 不支持其他请求
 
 
+@ method_decorator([login_required], name='dispatch')
+class SearchPageView(View):
+    """搜索页视图类"""
+    def get(self, request):
+        return HttpResponse("emmmmmmm........")
+
+    def post(self, request):
+        kw = request.POST["key_words"]
+        books_info = []
+        book_li = models.Book_list.objects.filter(book_name__icontains=kw)
+        for book in book_li:
+            book_info = {}
+            book_info["isbn"] = book.isbn
+            book_info["book_name"] = book.book_name
+            book_info["id"] = book.id
+            book_info["author"] = book.author
+            book_info["translator"] = book.translator
+            book_info["price"] = book.price
+            book_info["press"] = book.price
+            books_info.append(book_info)
+        context = {}
+        context["books"] = books_info
+        return render(request, "LibrarySys/search.html", context=context)
+
+
+
 def test(request):
     """测试用的，不用管"""
     # find_user = User.objects.filter(stu_id='001', password='python')
