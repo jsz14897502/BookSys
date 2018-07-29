@@ -136,7 +136,7 @@
                         <td>{{ rec.contact }}</td>
                         <td>{{ rec.cretime }}</td>
                         <td>{{ rec.expiry_time }}</td>
-                        <td><button class="btn btn-primary" id="{{ rec.user_data_id }}">同意</button></td>
+                        <td><button class="btn btn-primary" id="{{ rec.request_data_id }}">同意</button></td>
                     </tr>
                         {% endfor %}
                     {% endif %}
@@ -303,13 +303,13 @@ function getCookie(name) {
         });
     {% for book_rec in rec_reqs %}
     {% for rec in book_rec.rec_worked_req %}
-    $("#{{ rec.user_data_id }}").click(function () {
+    $("#{{ rec.request_data_id }}").click(function () {
     $.ajax({
             type : "post",
             url : "/home/",
             data : {
                 'book_name' : '{{ book_rec.book_name }}',
-                'user_data_id' : '{{ rec.user_data_id }}',
+                'request_data_id' : '{{ rec.request_data_id }}',
                 'state_code' : '6696',
                 csrfmiddlewaretoken: '{{ csrf_token }}'
 
