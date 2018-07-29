@@ -25,10 +25,10 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
+                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'LibrarySys:book_page' %}">书籍</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item active">
                         <a class="nav-link" href="{% url 'home_page' %}">个人中心</a>
                     </li>
                     <li class="nav-item dropdown">
@@ -272,5 +272,76 @@
 <script src="{% static 'LibrarySys/scripts/jquery.js' %}"></script>
 <script src="https://cdn.bootcss.com/popper.js/1.14.3/esm/popper.js"></script>
 <script src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script>
+function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            crossDomain: false, // obviates need for sameOrigin test
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+    {% for book_rec in rec_reqs %}
+    {% for rec in book_rec.rec_worked_req %}
+    $("#{{ rec.user_data_id }}").click(function () {
+    $.ajax({
+            type : "post",
+            url : "/home/",
+            data : {
+                'book_name' : '{{ book_rec.book_name }}',
+                'user_data_id' : '{{ rec.user_data_id }}',
+                'state_code' : '6696',
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+
+            },
+            success : function (data) {
+                if (data){
+                    if (data.msg=='2299'){
+                        alert("意向达成");
+                        window.location.reload();
+                    }
+                    else if(data.msg=='5500'){
+                        alert("数据库发生错误");
+                    }
+                    else if(data.msg=='4499'){
+                        alert("您的借阅行为异常");
+                    }
+                    else if(data.msg=='5500'){
+                        alert("错误");
+                    }
+                }
+                else{
+                    alert("没有能拿到对应msg")
+                }
+            },
+            error : function () {
+                alert("发生未知错误")
+            }
+        })
+    });
+{% endfor %}
+{% endfor %}
+
+</script>
 </body>
 </html>
