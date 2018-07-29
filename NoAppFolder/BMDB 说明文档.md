@@ -130,6 +130,21 @@ foreign key :  book_name, reference library_book_list.book_name. owner, referenc
 
 
 
+### violation_type 取值说明
+
+- 取值为 1 ：借阅超时
+- 取值为 2 : 书籍损坏
+- 取值为 3 : 书籍丢失
+
+
+
+### treat_state 取值说明
+
+- 取值为 0 : 未处理
+- 取值为 1 : 已处理
+
+
+
 ## 触发器说明
 
 ### `login_record` 表上的触发器

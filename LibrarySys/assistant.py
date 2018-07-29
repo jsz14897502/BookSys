@@ -56,8 +56,39 @@ class LendJudge():
     def __init__(self, request):
         self.request = request
 
+    def judge(self):
+        if self.violation_constraint():
+            return True
+        else:
+            return False
+
+    def lend_book(self):
+        stu_id = self.request.COOKIES["stu_id"]
+        bookname_tobe_borrowed = self.request.POST["book_name"]
+        requester_dataid = self.request.POST["user_data_id"]
+        requester_obj = models.User.objects.get(id__exact=requester_dataid)
+        user_obj = models.User.objects.get(stu_id=stu_id)
+        book_obj = models.Book_list.objects.get(owner=user_obj, book_name=bookname_tobe_borrowed)
+        end_time = now() + datetime.timedelta(days=10)
+        borrow_record = models.Borrow(book_name=book_obj, end_time=end_time, previous=user_obj)
+        refuse_part = LinkagePart(self.request)
+        try:
+            borrow_record.save()
+            book_obj.owner = requester_obj
+            refuse_part.refuse_other_request_while_lend()
+            return True
+        except:
+            return False
+
     def violation_constraint(self):
-        pass
+        stu_id = self.request.COOKIES["stu_id"]
+        user_obj = models.User.objects.get(stu_id=stu_id)
+        violation_record_li = models.Violation_record.objects.filter(user=user_obj,
+                                                                     violation_type__in=[1, 2, 3], treat_state=0)
+        if len(violation_record_li) == 0:
+            return True
+        else:
+            return False
 
 
 class BookCommentJudge():
@@ -184,6 +215,7 @@ class RequestAndBorrowInfo():
                 wk_re["contact"] = worked_req.requester.phone
                 wk_re["cretime"] = cre_time
                 wk_re["expiry_time"] = expiry_time
+                wk_re["user_data_id"] = worked_req.requester.id
                 rec_worked_req_li.append(wk_re)
                 req_num += 1
             unworked_request_li = models.Request.objects.filter(book_name=book, confirm_code__in=[2, 3])
@@ -215,6 +247,20 @@ class RequestAndBorrowInfo():
         time_tuple = awaretime.timetuple()
         time = "{}/{}/{}".format(time_tuple.tm_year, time_tuple.tm_mon, time_tuple.tm_mday)
         return time
+
+
+class LinkagePart():
+    def __init__(self, request):
+        self.request = request
+
+    def refuse_other_request_while_lend(self):
+        book_name = self.request.POST["book_name"]
+        book_obj = models.Book_list.objects.get(book_name__exact=book_name)
+        worked_request_li = models.Request.objects.filter(book_name__exact=book_obj, confirm_code__exact=0)
+        for wk_req in worked_request_li:
+            wk_req.confirm_code = 2
+
+
 
 
 

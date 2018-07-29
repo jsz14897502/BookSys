@@ -85,12 +85,11 @@ class Violation_record(models.Model):
     """用户违规记录表"""
     id = models.AutoField(primary_key=True) # 这条记录的 id，也是每条违规记录的 id
     user = models.ForeignKey("User", on_delete=models.DO_NOTHING) # 记录归属的用户 id
+    book_name = models.ForeignKey("Book_list", null=True, on_delete=models.DO_NOTHING) # 在哪本书上出现了违规行为
     violation_type = models.SmallIntegerField(null=False) # 违规类型
     cretime = models.DateTimeField(null=False) # 违规时间
     treat_state = models.BooleanField(default=1, null=False) # 用户是否已处理该违规
     treat_time = models.DateTimeField(null=True) # 违规处理时间
-
-
 
 
 # class Book_Score(models.Model):

@@ -130,13 +130,13 @@
                     </tr>
                     {% else %}
                         {% for rec in book_rec.rec_worked_req %}
-                    <tr>
+                    <tr id="{{ rec.message_num }}">
                         <th scope="row">{{ rec.message_num }}</th>
                         <td>{{ rec.requester }}</td>
                         <td>{{ rec.contact }}</td>
                         <td>{{ rec.cretime }}</td>
                         <td>{{ rec.expiry_time }}</td>
-                        <td><button class="btn btn-primary">同意</button></td>
+                        <td><button class="btn btn-primary" id="{{ rec.user_data_id }}">同意</button></td>
                     </tr>
                         {% endfor %}
                     {% endif %}
