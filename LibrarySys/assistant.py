@@ -65,16 +65,31 @@ class LendJudge():
     def lend_book(self):
         stu_id = self.request.COOKIES["stu_id"]
         bookname_tobe_borrowed = self.request.POST["book_name"]
-        requester_dataid = self.request.POST["user_data_id"]
-        requester_obj = models.User.objects.get(id__exact=requester_dataid)
+        request_dataid = self.request.POST["request_data_id"]
+
+        request_obj = models.Request.objects.get(id=request_dataid)
+        request_obj.confirm_code = 1
+
+        requester_obj = models.User.objects.get(id=request_obj.requester_id)
+        requester_obj.holds = requester_obj.holds + 1
+
         user_obj = models.User.objects.get(stu_id=stu_id)
+        user_obj.holds = user_obj.holds - 1
+
         book_obj = models.Book_list.objects.get(owner=user_obj, book_name=bookname_tobe_borrowed)
+        book_obj.borrowed_times = book_obj.borrowed_times + 1
+
         end_time = now() + datetime.timedelta(days=10)
+
         borrow_record = models.Borrow(book_name=book_obj, end_time=end_time, previous=user_obj)
         refuse_part = LinkagePart(self.request)
         try:
-            borrow_record.save()
             book_obj.owner = requester_obj
+            borrow_record.save()
+            requester_obj.save()
+            book_obj.save()
+            user_obj.save()
+            request_obj.save()
             refuse_part.refuse_other_request_while_lend()
             return True
         except:
@@ -215,7 +230,7 @@ class RequestAndBorrowInfo():
                 wk_re["contact"] = worked_req.requester.phone
                 wk_re["cretime"] = cre_time
                 wk_re["expiry_time"] = expiry_time
-                wk_re["user_data_id"] = worked_req.requester.id
+                wk_re["request_data_id"] = worked_req.id
                 rec_worked_req_li.append(wk_re)
                 req_num += 1
             unworked_request_li = models.Request.objects.filter(book_name=book, confirm_code__in=[2, 3])
@@ -223,8 +238,8 @@ class RequestAndBorrowInfo():
                 expiry_time = self.awaretime_to_date(unworked_req.expiry_time)
                 cre_time = self.awaretime_to_date(unworked_req.cretime)
                 unwk_re = {}
-                unwk_re["requester"] = worked_req.requester.user_name
-                unwk_re["contact"] = worked_req.requester.phone
+                unwk_re["requester"] = unworked_req.requester.user_name
+                unwk_re["contact"] = unworked_req.requester.phone
                 unwk_re["cretime"] = cre_time
                 unwk_re["expiry_time"] = expiry_time
                 if unworked_req.confirm_code == 2:
@@ -259,6 +274,7 @@ class LinkagePart():
         worked_request_li = models.Request.objects.filter(book_name__exact=book_obj, confirm_code__exact=0)
         for wk_req in worked_request_li:
             wk_req.confirm_code = 2
+            wk_req.save()
 
 
 

@@ -217,6 +217,7 @@ class HomePageView(View):
         if request.POST["state_code"] == "6696":
             lend_judge = assistant.LendJudge(request)
             if lend_judge.judge():
+                print("zhixing22")
                 if lend_judge.lend_book():
                     return JsonResponse({"msg": "2299"}) # 执行正常
                 else:
